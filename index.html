@@ -47,7 +47,7 @@ body {
 
     width: 100%;
 
-    max-width: 600px;
+    max-width: 700px;
 
     text-align: center;
 
@@ -63,9 +63,14 @@ h1 {
 
     color: #aaa;
 
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 
 }
+
+
+/* ============================================================
+   CAMERA
+   ============================================================ */
 
 .camera-box {
 
@@ -95,11 +100,37 @@ video {
 
 }
 
+
+/* ============================================================
+   CANVAS
+   ============================================================ */
+
+#overlay {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    pointer-events: none;
+
+}
+
+
+/* ============================================================
+   BUTTON
+   ============================================================ */
+
 button {
 
     margin-top: 20px;
 
-    padding: 15px 30px;
+    padding: 14px 25px;
 
     border: none;
 
@@ -109,7 +140,7 @@ button {
 
     color: white;
 
-    font-size: 18px;
+    font-size: 17px;
 
     font-weight: bold;
 
@@ -123,9 +154,14 @@ button:active {
 
 }
 
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
 #status {
 
-    margin-top: 20px;
+    margin-top: 18px;
 
     padding: 12px;
 
@@ -139,9 +175,30 @@ button:active {
 
 }
 
+.status-ok {
+
+    background: #063b16 !important;
+
+    color: #55ff77 !important;
+
+}
+
+.status-error {
+
+    background: #3b0606 !important;
+
+    color: #ff7777 !important;
+
+}
+
+
+/* ============================================================
+   INFO
+   ============================================================ */
+
 .info {
 
-    margin-top: 20px;
+    margin-top: 15px;
 
     color: #888;
 
@@ -153,26 +210,41 @@ button:active {
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
-<h1>📷 FACE ABSENSI</h1>
+
+<h1>
+📷 FACE ABSENSI
+</h1>
+
 
 <div class="subtitle">
 
-Sistem Absensi Berbasis Face Recognition
+Face Detection — Tahap 2
 
 </div>
 
+
 <div class="camera-box">
+
 
 <video id="video"
        autoplay
        playsinline
-       muted></video>
+       muted>
+</video>
+
+
+<canvas id="overlay">
+</canvas>
+
 
 </div>
+
 
 <button id="startCamera">
 
@@ -180,75 +252,236 @@ AKTIFKAN KAMERA
 
 </button>
 
+
 <div id="status">
 
-Kamera belum aktif
+Memuat Face Detection...
 
 </div>
+
 
 <div class="info">
 
-Tahap 1 — Camera Test
+ESP32 tidak digunakan pada tahap ini.
+
+<br>
+
+Pemrosesan dilakukan langsung di browser HP.
 
 </div>
 
+
 </div>
+
+
+<!-- ==========================================================
+     FACE API
+     ========================================================== -->
+
+<script src="./face-api.min.js"></script>
 
 
 <script>
+
+
+// ============================================================
+// ELEMENT
+// ============================================================
 
 const video =
     document.getElementById(
         "video"
     );
 
+
+const canvas =
+    document.getElementById(
+        "overlay"
+    );
+
+
 const button =
     document.getElementById(
         "startCamera"
     );
+
 
 const status =
     document.getElementById(
         "status"
     );
 
+
+// ============================================================
+// VARIABLE
+// ============================================================
+
 let cameraStream = null;
 
+let detectorReady = false;
+
+let detecting = false;
+
+
+// ============================================================
+// STATUS
+// ============================================================
+
+function setStatus(
+    text,
+    type = ""
+)
+{
+
+    status.innerText = text;
+
+    status.className = "";
+
+    if (type === "ok")
+    {
+
+        status.classList.add(
+            "status-ok"
+        );
+
+    }
+
+    else if (type === "error")
+    {
+
+        status.classList.add(
+            "status-error"
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// LOAD MODEL
+// ============================================================
+
+async function loadFaceDetector()
+{
+
+    try
+    {
+
+        setStatus(
+            "🧠 Memuat model Face Detection..."
+        );
+
+
+        console.log(
+            "face-api version:",
+            faceapi.version
+        );
+
+
+        await faceapi.nets
+            .tinyFaceDetector
+            .loadFromUri(
+                "./models"
+            );
+
+
+        detectorReady = true;
+
+
+        setStatus(
+            "✅ Face Detection siap.\n\n" +
+            "Tekan AKTIFKAN KAMERA.",
+            "ok"
+        );
+
+
+        console.log(
+            "Tiny Face Detector loaded"
+        );
+
+    }
+
+    catch (error)
+    {
+
+        console.error(
+            "Model error:",
+            error
+        );
+
+
+        setStatus(
+
+            "❌ GAGAL MEMUAT MODEL\n\n" +
+
+            error.message +
+
+            "\n\n" +
+
+            "Periksa folder:\n" +
+
+            "./models/",
+
+            "error"
+
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// START CAMERA
+// ============================================================
 
 button.addEventListener(
     "click",
-    async function () {
+    async function ()
+    {
 
-        status.innerText =
-            "Meminta izin kamera...";
+        if (!detectorReady)
+        {
 
-        try {
+            setStatus(
+                "⏳ Model Face Detection belum siap..."
+            );
 
-            if (
-                !navigator.mediaDevices ||
-                !navigator.mediaDevices.getUserMedia
-            ) {
+            return;
 
-                throw new Error(
-                    "Browser tidak mendukung akses kamera."
-                );
+        }
 
-            }
+
+        try
+        {
+
+            setStatus(
+                "📷 Meminta akses kamera..."
+            );
+
 
             cameraStream =
-                await navigator.mediaDevices
+
+                await navigator
+                .mediaDevices
                 .getUserMedia({
 
                     video: {
 
-                        facingMode: "user",
+                        facingMode:
+                            "user",
 
                         width: {
+
                             ideal: 1280
+
                         },
 
                         height: {
+
                             ideal: 720
+
                         }
 
                     },
@@ -257,43 +490,366 @@ button.addEventListener(
 
                 });
 
+
             video.srcObject =
                 cameraStream;
 
+
             await video.play();
 
-            status.innerText =
-                "✅ KAMERA AKTIF\n\n" +
-                "Kamera HP berhasil dibuka.";
+
+            // =================================================
+            // CANVAS
+            // =================================================
+
+            canvas.width =
+                video.videoWidth;
+
+            canvas.height =
+                video.videoHeight;
+
 
             button.innerText =
                 "KAMERA AKTIF";
 
+
             button.style.background =
                 "#1976d2";
 
+
+            setStatus(
+                "📷 Kamera aktif.\n\n" +
+                "🔎 Mencari wajah..."
+            );
+
+
+            // =================================================
+            // START DETECTION
+            // =================================================
+
+            if (!detecting)
+            {
+
+                detecting = true;
+
+                detectFaces();
+
+            }
+
         }
 
-        catch (error) {
+        catch (error)
+        {
 
             console.error(
-                "Camera error:",
                 error
             );
 
-            status.innerText =
+
+            setStatus(
+
                 "❌ GAGAL MEMBUKA KAMERA\n\n" +
-                "Nama error: " +
+
+                "Nama: " +
                 error.name +
+
                 "\n\n" +
-                error.message;
+
+                error.message,
+
+                "error"
+
+            );
 
         }
 
     }
 );
 
+
+// ============================================================
+// DETECT FACE
+// ============================================================
+
+async function detectFaces()
+{
+
+    if (!detecting)
+        return;
+
+
+    if (
+        video.readyState <
+        2
+    )
+    {
+
+        requestAnimationFrame(
+            detectFaces
+        );
+
+        return;
+
+    }
+
+
+    try
+    {
+
+        const options =
+
+            new faceapi
+            .TinyFaceDetectorOptions({
+
+                inputSize: 320,
+
+                scoreThreshold: 0.5
+
+            });
+
+
+        const detections =
+
+            await faceapi
+            .detectAllFaces(
+                video,
+                options
+            );
+
+
+        // =====================================================
+        // CLEAR CANVAS
+        // =====================================================
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        // =====================================================
+        // RESIZE RESULT
+        // =====================================================
+
+        const resizedDetections =
+
+            faceapi.resizeResults(
+                detections,
+                {
+                    width:
+                        video.videoWidth,
+
+                    height:
+                        video.videoHeight
+                }
+            );
+
+
+        // =====================================================
+        // DRAW
+        // =====================================================
+
+        resizedDetections.forEach(
+            detection =>
+            {
+
+                const box =
+                    detection.box;
+
+
+                const score =
+                    detection.score;
+
+
+                // =============================================
+                // MIRROR KOORDINAT
+                // =============================================
+
+                const x =
+                    canvas.width -
+                    box.x -
+                    box.width;
+
+
+                const y =
+                    box.y;
+
+
+                // =============================================
+                // BOX
+                // =============================================
+
+                ctx.strokeStyle =
+                    "#00ff55";
+
+
+                ctx.lineWidth =
+                    Math.max(
+                        3,
+                        canvas.width / 250
+                    );
+
+
+                ctx.strokeRect(
+
+                    x,
+                    y,
+
+                    box.width,
+                    box.height
+
+                );
+
+
+                // =============================================
+                // SCORE
+                // =============================================
+
+                const percent =
+
+                    (
+                        score * 100
+                    ).toFixed(1);
+
+
+                const label =
+
+                    "FACE " +
+                    percent +
+                    "%";
+
+
+                ctx.font =
+                    "bold 18px Arial";
+
+
+                const textWidth =
+                    ctx.measureText(
+                        label
+                    ).width;
+
+
+                ctx.fillStyle =
+                    "rgba(0,255,70,0.85)";
+
+
+                ctx.fillRect(
+
+                    x,
+
+                    Math.max(
+                        0,
+                        y - 30
+                    ),
+
+                    textWidth + 14,
+
+                    30
+
+                );
+
+
+                ctx.fillStyle =
+                    "#000";
+
+
+                ctx.fillText(
+
+                    label,
+
+                    x + 7,
+
+                    Math.max(
+                        21,
+                        y - 9
+                    )
+
+                );
+
+            }
+        );
+
+
+        // =====================================================
+        // STATUS
+        // =====================================================
+
+        if (
+            detections.length > 0
+        )
+        {
+
+            setStatus(
+
+                "✅ WAJAH TERDETEKSI\n\n" +
+
+                "Jumlah wajah: " +
+
+                detections.length,
+
+                "ok"
+
+            );
+
+        }
+
+        else
+        {
+
+            setStatus(
+                "🔎 Mencari wajah..."
+            );
+
+        }
+
+    }
+
+    catch (error)
+    {
+
+        console.error(
+            "Detection error:",
+            error
+        );
+
+    }
+
+
+    // =========================================================
+    // NEXT FRAME
+    // =========================================================
+
+    setTimeout(
+        () => {
+
+            requestAnimationFrame(
+                detectFaces
+            );
+
+        },
+
+        100
+
+    );
+
+}
+
+
+// ============================================================
+// INITIALIZE
+// ============================================================
+
+loadFaceDetector();
+
+
 </script>
+
 
 </body>
 
