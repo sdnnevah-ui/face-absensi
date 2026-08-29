@@ -8,7 +8,11 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>Face Absensi</title>
+<title>
+Face Absensi - Detection & Recognition
+</title>
+
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
 <style>
 
@@ -20,36 +24,23 @@ body {
 
     margin: 0;
 
-    min-height: 100vh;
+    padding: 20px;
 
-    background:
-        linear-gradient(
-            135deg,
-            #101820,
-            #182b3a
-        );
+    background: #111;
 
     color: white;
 
     font-family: Arial, sans-serif;
 
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    padding: 20px;
+    text-align: center;
 
 }
 
 .container {
 
-    width: 100%;
+    max-width: 850px;
 
-    max-width: 700px;
-
-    text-align: center;
+    margin: auto;
 
 }
 
@@ -67,24 +58,23 @@ h1 {
 
 }
 
-
-/* ============================================================
-   CAMERA
-   ============================================================ */
-
-.camera-box {
+.camera {
 
     position: relative;
 
     width: 100%;
 
+    max-width: 640px;
+
+    margin: auto;
+
     background: black;
 
-    border-radius: 15px;
+    border: 2px solid #444;
+
+    border-radius: 10px;
 
     overflow: hidden;
-
-    border: 2px solid #34495e;
 
 }
 
@@ -100,12 +90,7 @@ video {
 
 }
 
-
-/* ============================================================
-   CANVAS
-   ============================================================ */
-
-#overlay {
+canvas {
 
     position: absolute;
 
@@ -117,53 +102,17 @@ video {
 
     height: 100%;
 
-    pointer-events: none;
+    transform: scaleX(-1);
 
 }
 
+.status {
 
-/* ============================================================
-   BUTTON
-   ============================================================ */
-
-button {
-
-    margin-top: 20px;
-
-    padding: 14px 25px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    background: #00c853;
-
-    color: white;
-
-    font-size: 17px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-}
-
-button:active {
-
-    transform: scale(0.97);
-
-}
-
-
-/* ============================================================
-   STATUS
-   ============================================================ */
-
-#status {
-
-    margin-top: 18px;
+    margin: 15px auto;
 
     padding: 12px;
+
+    max-width: 640px;
 
     border-radius: 8px;
 
@@ -171,38 +120,103 @@ button:active {
 
     color: #aaa;
 
-    white-space: pre-line;
+    font-weight: bold;
 
 }
 
-.status-ok {
+.status.ready {
 
-    background: #063b16 !important;
+    background: #063b16;
 
-    color: #55ff77 !important;
-
-}
-
-.status-error {
-
-    background: #3b0606 !important;
-
-    color: #ff7777 !important;
+    color: #55ff77;
 
 }
 
+.status.error {
 
-/* ============================================================
-   INFO
-   ============================================================ */
+    background: #4b0808;
+
+    color: #ff7777;
+
+}
+
+.status.loading {
+
+    background: #3a3000;
+
+    color: #ffe66b;
+
+}
+
+button {
+
+    padding: 12px 25px;
+
+    margin: 10px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #1976d2;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+}
+
+button:hover {
+
+    background: #2196f3;
+
+}
+
+button:disabled {
+
+    background: #555;
+
+    cursor: not-allowed;
+
+}
 
 .info {
 
-    margin-top: 15px;
+    max-width: 640px;
 
-    color: #888;
+    margin: 20px auto;
 
-    font-size: 13px;
+    padding: 15px;
+
+    background: #1d1d1d;
+
+    border-radius: 8px;
+
+    text-align: left;
+
+    font-family: monospace;
+
+    line-height: 1.7;
+
+}
+
+.green {
+
+    color: #00ff66;
+
+}
+
+.yellow {
+
+    color: #ffe66b;
+
+}
+
+.red {
+
+    color: #ff5555;
 
 }
 
@@ -221,67 +235,100 @@ button:active {
 📷 FACE ABSENSI
 </h1>
 
-
 <div class="subtitle">
 
-Face Detection — Tahap 2
+ESP32 / Android / PC → Face Detection + Recognition
 
 </div>
 
 
-<div class="camera-box">
+<div id="status"
+     class="status loading">
 
+⏳ Memuat model AI...
+
+</div>
+
+
+<div class="camera">
 
 <video id="video"
        autoplay
-       playsinline
-       muted>
+       muted
+       playsinline>
 </video>
-
 
 <canvas id="overlay">
 </canvas>
 
-
 </div>
 
 
-<button id="startCamera">
+<button id="startButton"
+        onclick="startCamera()"
+        disabled>
 
-AKTIFKAN KAMERA
+▶ START CAMERA
 
 </button>
 
 
-<div id="status">
-
-Memuat Face Detection...
-
-</div>
-
-
 <div class="info">
 
-ESP32 tidak digunakan pada tahap ini.
+<div>
+MODEL:
+<span id="modelStatus"
+      class="yellow">
 
-<br>
+Loading...
 
-Pemrosesan dilakukan langsung di browser HP.
+</span>
+</div>
+
+<div>
+FACE:
+<span id="faceStatus"
+      class="yellow">
+
+-
+
+</span>
+</div>
+
+<div>
+NAMA:
+<span id="nameStatus"
+      class="yellow">
+
+-
+
+</span>
+</div>
+
+<div>
+SCORE:
+<span id="scoreStatus"
+      class="yellow">
+
+-
+
+</span>
+</div>
 
 </div>
 
 
 </div>
-
-
-<!-- ==========================================================
-     FACE API
-     ========================================================== -->
-
-<script src="./face-api.min.js"></script>
 
 
 <script>
+
+
+// ============================================================
+// CONFIGURATION
+// ============================================================
+
+const MODEL_URL = "./models";
 
 
 // ============================================================
@@ -289,143 +336,139 @@ Pemrosesan dilakukan langsung di browser HP.
 // ============================================================
 
 const video =
-    document.getElementById(
-        "video"
-    );
-
+    document.getElementById("video");
 
 const canvas =
-    document.getElementById(
-        "overlay"
-    );
+    document.getElementById("overlay");
 
+const statusBox =
+    document.getElementById("status");
 
-const button =
-    document.getElementById(
-        "startCamera"
-    );
+const modelStatus =
+    document.getElementById("modelStatus");
 
+const faceStatus =
+    document.getElementById("faceStatus");
 
-const status =
-    document.getElementById(
-        "status"
-    );
+const nameStatus =
+    document.getElementById("nameStatus");
 
+const scoreStatus =
+    document.getElementById("scoreStatus");
 
-// ============================================================
-// VARIABLE
-// ============================================================
-
-let cameraStream = null;
-
-let detectorReady = false;
-
-let detecting = false;
+const startButton =
+    document.getElementById("startButton");
 
 
 // ============================================================
-// STATUS
+// FACE DATABASE
+//
+// NANTI KITA ISI FOTO/NAMA DI SINI
 // ============================================================
 
-function setStatus(
-    text,
-    type = ""
-)
-{
-
-    status.innerText = text;
-
-    status.className = "";
-
-    if (type === "ok")
-    {
-
-        status.classList.add(
-            "status-ok"
-        );
-
-    }
-
-    else if (type === "error")
-    {
-
-        status.classList.add(
-            "status-error"
-        );
-
-    }
-
-}
+const labeledDescriptors = [];
 
 
 // ============================================================
-// LOAD MODEL
+// LOAD MODELS
 // ============================================================
 
-async function loadFaceDetector()
+async function loadModels()
 {
 
     try
     {
 
-        setStatus(
-            "🧠 Memuat model Face Detection..."
-        );
+        statusBox.className =
+            "status loading";
+
+        statusBox.innerText =
+            "⏳ Memuat Tiny Face Detector...";
+
+
+        await faceapi.nets.tinyFaceDetector
+            .loadFromUri(MODEL_URL);
 
 
         console.log(
-            "face-api version:",
-            faceapi.version
-        );
+            "Tiny Face Detector loaded");
 
 
-        await faceapi.nets
-            .tinyFaceDetector
-            .loadFromUri(
-                "./models"
-            );
+        statusBox.innerText =
+            "⏳ Memuat Face Landmark 68...";
 
 
-        detectorReady = true;
-
-
-        setStatus(
-            "✅ Face Detection siap.\n\n" +
-            "Tekan AKTIFKAN KAMERA.",
-            "ok"
-        );
+        await faceapi.nets.faceLandmark68Net
+            .loadFromUri(MODEL_URL);
 
 
         console.log(
-            "Tiny Face Detector loaded"
-        );
+            "Face Landmark 68 loaded");
+
+
+        statusBox.innerText =
+            "⏳ Memuat Face Recognition...";
+
+
+        await faceapi.nets.faceRecognitionNet
+            .loadFromUri(MODEL_URL);
+
+
+        console.log(
+            "Face Recognition loaded");
+
+
+        modelStatus.innerText =
+            "SEMUA MODEL OK";
+
+        modelStatus.className =
+            "green";
+
+
+        statusBox.className =
+            "status ready";
+
+        statusBox.innerText =
+            "✅ MODEL AI SIAP";
+
+
+        startButton.disabled =
+            false;
+
+
+        console.log(
+            "================================");
+
+        console.log(
+            "ALL FACE-API MODELS READY");
+
+        console.log(
+            "================================");
 
     }
 
-    catch (error)
+    catch(error)
     {
 
         console.error(
-            "Model error:",
-            error
-        );
+            "MODEL ERROR:",
+            error);
 
 
-        setStatus(
+        statusBox.className =
+            "status error";
 
-            "❌ GAGAL MEMUAT MODEL\n\n" +
 
-            error.message +
+        statusBox.innerText =
+            "❌ GAGAL MEMUAT MODEL";
 
-            "\n\n" +
 
-            "Periksa folder:\n" +
+        modelStatus.innerText =
+            error.message;
 
-            "./models/",
 
-            "error"
-
-        );
+        modelStatus.className =
+            "red";
 
     }
 
@@ -436,52 +479,33 @@ async function loadFaceDetector()
 // START CAMERA
 // ============================================================
 
-button.addEventListener(
-    "click",
-    async function ()
+async function startCamera()
+{
+
+    try
     {
 
-        if (!detectorReady)
-        {
+        statusBox.className =
+            "status loading";
 
-            setStatus(
-                "⏳ Model Face Detection belum siap..."
-            );
-
-            return;
-
-        }
+        statusBox.innerText =
+            "⏳ Meminta akses kamera...";
 
 
-        try
-        {
-
-            setStatus(
-                "📷 Meminta akses kamera..."
-            );
-
-
-            cameraStream =
-
-                await navigator
-                .mediaDevices
+        const stream =
+            await navigator.mediaDevices
                 .getUserMedia({
 
                     video: {
 
-                        facingMode:
-                            "user",
+                        facingMode: "user",
 
                         width: {
-
-                            ideal: 1280
-
+                            ideal: 640
                         },
 
                         height: {
-
-                            ideal: 720
-
+                            ideal: 480
                         }
 
                     },
@@ -491,102 +515,106 @@ button.addEventListener(
                 });
 
 
-            video.srcObject =
-                cameraStream;
+        video.srcObject =
+            stream;
 
 
-            await video.play();
+        statusBox.className =
+            "status ready";
+
+        statusBox.innerText =
+            "📷 KAMERA AKTIF";
 
 
-            // =================================================
-            // CANVAS
-            // =================================================
-
-            canvas.width =
-                video.videoWidth;
-
-            canvas.height =
-                video.videoHeight;
+        startButton.disabled =
+            true;
 
 
-            button.innerText =
-                "KAMERA AKTIF";
-
-
-            button.style.background =
-                "#1976d2";
-
-
-            setStatus(
-                "📷 Kamera aktif.\n\n" +
-                "🔎 Mencari wajah..."
-            );
-
-
-            // =================================================
-            // START DETECTION
-            // =================================================
-
-            if (!detecting)
+        video.addEventListener(
+            "loadedmetadata",
+            () =>
             {
 
-                detecting = true;
+                canvas.width =
+                    video.videoWidth;
 
-                detectFaces();
+                canvas.height =
+                    video.videoHeight;
 
-            }
+                startDetection();
 
-        }
-
-        catch (error)
-        {
-
-            console.error(
-                error
-            );
-
-
-            setStatus(
-
-                "❌ GAGAL MEMBUKA KAMERA\n\n" +
-
-                "Nama: " +
-                error.name +
-
-                "\n\n" +
-
-                error.message,
-
-                "error"
-
-            );
-
-        }
+            },
+            {
+                once: true
+            });
 
     }
-);
+
+    catch(error)
+    {
+
+        console.error(
+            error);
+
+
+        statusBox.className =
+            "status error";
+
+
+        statusBox.innerText =
+            "❌ GAGAL MEMBUKA KAMERA";
+
+
+        faceStatus.innerText =
+            error.name;
+
+
+        faceStatus.className =
+            "red";
+
+    }
+
+}
 
 
 // ============================================================
-// DETECT FACE
+// FACE DETECTION
 // ============================================================
 
-async function detectFaces()
+let detecting = false;
+
+
+async function startDetection()
 {
 
-    if (!detecting)
+    if (detecting)
         return;
 
 
-    if (
-        video.readyState <
-        2
-    )
+    detecting = true;
+
+
+    console.log(
+        "Face detection started");
+
+
+    detectLoop();
+
+}
+
+
+// ============================================================
+// DETECTION LOOP
+// ============================================================
+
+async function detectLoop()
+{
+
+    if (!video.videoWidth)
     {
 
         requestAnimationFrame(
-            detectFaces
-        );
+            detectLoop);
 
         return;
 
@@ -596,204 +624,308 @@ async function detectFaces()
     try
     {
 
-        const options =
-
-            new faceapi
-            .TinyFaceDetectorOptions({
-
-                inputSize: 320,
-
-                scoreThreshold: 0.5
-
-            });
-
-
         const detections =
-
             await faceapi
-            .detectAllFaces(
-                video,
-                options
+                .detectAllFaces(
+
+                    video,
+
+                    new faceapi
+                        .TinyFaceDetectorOptions({
+
+                            inputSize: 320,
+
+                            scoreThreshold: 0.5
+
+                        })
+
+                )
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+
+
+        drawResults(
+            detections);
+
+
+    }
+
+    catch(error)
+    {
+
+        console.error(
+            "Detection error:",
+            error);
+
+    }
+
+
+    setTimeout(
+        detectLoop,
+        100);
+
+}
+
+
+// ============================================================
+// DRAW RESULTS
+// ============================================================
+
+function drawResults(
+    detections)
+{
+
+    const displaySize = {
+
+        width:
+            video.videoWidth,
+
+        height:
+            video.videoHeight
+
+    };
+
+
+    faceapi.matchDimensions(
+        canvas,
+        displaySize);
+
+
+    const resized =
+        faceapi.resizeResults(
+            detections,
+            displaySize);
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height);
+
+
+    // ========================================================
+    // NO FACE
+    // ========================================================
+
+    if (resized.length === 0)
+    {
+
+        faceStatus.innerText =
+            "TIDAK ADA WAJAH";
+
+        faceStatus.className =
+            "yellow";
+
+
+        nameStatus.innerText =
+            "-";
+
+
+        scoreStatus.innerText =
+            "-";
+
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // FACE DETECTED
+    // ========================================================
+
+    faceStatus.innerText =
+        resized.length +
+        " WAJAH TERDETEKSI";
+
+    faceStatus.className =
+        "green";
+
+
+    // ========================================================
+    // LOOP ALL FACES
+    // ========================================================
+
+    resized.forEach(
+        (result, index) =>
+        {
+
+            const box =
+                result.detection.box;
+
+
+            const score =
+                result.detection.score;
+
+
+            // =================================================
+            // DRAW BOX
+            // =================================================
+
+            ctx.strokeStyle =
+                "#00ff55";
+
+            ctx.lineWidth =
+                3;
+
+
+            ctx.strokeRect(
+
+                box.x,
+
+                box.y,
+
+                box.width,
+
+                box.height
+
             );
 
 
-        // =====================================================
-        // CLEAR CANVAS
-        // =====================================================
+            // =================================================
+            // SCORE
+            // =================================================
 
-        const ctx =
-            canvas.getContext("2d");
+            ctx.fillStyle =
+                "#00ff55";
 
-
-        ctx.clearRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
+            ctx.font =
+                "bold 18px Arial";
 
 
-        // =====================================================
-        // RESIZE RESULT
-        // =====================================================
+            ctx.fillText(
 
-        const resizedDetections =
+                "FACE " +
+                (score * 100)
+                    .toFixed(1) +
+                "%",
 
-            faceapi.resizeResults(
-                detections,
-                {
-                    width:
-                        video.videoWidth,
+                box.x,
 
-                    height:
-                        video.videoHeight
-                }
+                Math.max(
+                    20,
+                    box.y - 8)
+
             );
 
 
-        // =====================================================
-        // DRAW
-        // =====================================================
+            // =================================================
+            // RECOGNITION
+            // =================================================
 
-        resizedDetections.forEach(
-            detection =>
+            if (
+                labeledDescriptors.length > 0
+            )
             {
 
-                const box =
-                    detection.box;
+                recognizeFace(
+                    result,
+                    box);
 
+            }
 
-                const score =
-                    detection.score;
+            else
+            {
 
-
-                // =============================================
-                // MIRROR KOORDINAT
-                // =============================================
-
-                const x =
-                    canvas.width -
-                    box.x -
-                    box.width;
-
-
-                const y =
-                    box.y;
-
-
-                // =============================================
-                // BOX
-                // =============================================
-
-                ctx.strokeStyle =
-                    "#00ff55";
-
-
-                ctx.lineWidth =
-                    Math.max(
-                        3,
-                        canvas.width / 250
-                    );
-
-
-                ctx.strokeRect(
-
-                    x,
-                    y,
-
-                    box.width,
-                    box.height
-
-                );
-
-
-                // =============================================
-                // SCORE
-                // =============================================
-
-                const percent =
-
-                    (
-                        score * 100
-                    ).toFixed(1);
-
-
-                const label =
-
-                    "FACE " +
-                    percent +
-                    "%";
-
+                ctx.fillStyle =
+                    "#ffe66b";
 
                 ctx.font =
                     "bold 18px Arial";
 
 
-                const textWidth =
-                    ctx.measureText(
-                        label
-                    ).width;
-
-
-                ctx.fillStyle =
-                    "rgba(0,255,70,0.85)";
-
-
-                ctx.fillRect(
-
-                    x,
-
-                    Math.max(
-                        0,
-                        y - 30
-                    ),
-
-                    textWidth + 14,
-
-                    30
-
-                );
-
-
-                ctx.fillStyle =
-                    "#000";
-
-
                 ctx.fillText(
 
-                    label,
+                    "UNKNOWN",
 
-                    x + 7,
+                    box.x,
 
-                    Math.max(
-                        21,
-                        y - 9
-                    )
+                    box.y +
+                    box.height +
+                    25
 
                 );
 
+
+                nameStatus.innerText =
+                    "UNKNOWN";
+
             }
-        );
+
+        });
+
+}
 
 
-        // =====================================================
-        // STATUS
-        // =====================================================
+// ============================================================
+// FACE RECOGNITION
+// ============================================================
+
+function recognizeFace(
+    result,
+    box)
+{
+
+    try
+    {
+
+        const faceMatcher =
+            new faceapi.FaceMatcher(
+                labeledDescriptors,
+                0.6);
+
+
+        const bestMatch =
+            faceMatcher.findBestMatch(
+                result.descriptor);
+
+
+        const name =
+            bestMatch.label;
+
+
+        const distance =
+            bestMatch.distance;
+
+
+        nameStatus.innerText =
+            name;
+
+
+        scoreStatus.innerText =
+            distance.toFixed(3);
+
+
+        const ctx =
+            canvas.getContext("2d");
+
 
         if (
-            detections.length > 0
+            name !== "unknown"
         )
         {
 
-            setStatus(
+            ctx.fillStyle =
+                "#00ff55";
 
-                "✅ WAJAH TERDETEKSI\n\n" +
+            ctx.font =
+                "bold 20px Arial";
 
-                "Jumlah wajah: " +
 
-                detections.length,
+            ctx.fillText(
 
-                "ok"
+                "✓ " + name,
+
+                box.x,
+
+                box.y +
+                box.height +
+                28
 
             );
 
@@ -802,50 +934,48 @@ async function detectFaces()
         else
         {
 
-            setStatus(
-                "🔎 Mencari wajah..."
+            ctx.fillStyle =
+                "#ff5555";
+
+            ctx.font =
+                "bold 20px Arial";
+
+
+            ctx.fillText(
+
+                "UNKNOWN",
+
+                box.x,
+
+                box.y +
+                box.height +
+                28
+
             );
 
         }
 
     }
 
-    catch (error)
+    catch(error)
     {
 
         console.error(
-            "Detection error:",
-            error
-        );
+            "Recognition error:",
+            error);
 
     }
-
-
-    // =========================================================
-    // NEXT FRAME
-    // =========================================================
-
-    setTimeout(
-        () => {
-
-            requestAnimationFrame(
-                detectFaces
-            );
-
-        },
-
-        100
-
-    );
 
 }
 
 
 // ============================================================
-// INITIALIZE
+// PAGE LOAD
 // ============================================================
 
-loadFaceDetector();
+window.addEventListener(
+    "load",
+    loadModels);
 
 
 </script>
