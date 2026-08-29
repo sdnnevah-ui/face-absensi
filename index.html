@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Face Absensi</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            135deg,
+            #101820,
+            #182b3a
+        );
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+}
+
+.container {
+
+    width: 100%;
+
+    max-width: 600px;
+
+    text-align: center;
+
+}
+
+h1 {
+
+    margin-bottom: 5px;
+
+}
+
+.subtitle {
+
+    color: #aaa;
+
+    margin-bottom: 25px;
+
+}
+
+.camera-box {
+
+    position: relative;
+
+    width: 100%;
+
+    background: black;
+
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    border: 2px solid #34495e;
+
+}
+
+video {
+
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    transform: scaleX(-1);
+
+}
+
+button {
+
+    margin-top: 20px;
+
+    padding: 15px 30px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #00c853;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+button:active {
+
+    transform: scale(0.97);
+
+}
+
+#status {
+
+    margin-top: 20px;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    background: #222;
+
+    color: #aaa;
+
+    white-space: pre-line;
+
+}
+
+.info {
+
+    margin-top: 20px;
+
+    color: #888;
+
+    font-size: 13px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📷 FACE ABSENSI</h1>
+
+<div class="subtitle">
+
+Sistem Absensi Berbasis Face Recognition
+
+</div>
+
+<div class="camera-box">
+
+<video id="video"
+       autoplay
+       playsinline
+       muted></video>
+
+</div>
+
+<button id="startCamera">
+
+AKTIFKAN KAMERA
+
+</button>
+
+<div id="status">
+
+Kamera belum aktif
+
+</div>
+
+<div class="info">
+
+Tahap 1 — Camera Test
+
+</div>
+
+</div>
+
+
+<script>
+
+const video =
+    document.getElementById(
+        "video"
+    );
+
+const button =
+    document.getElementById(
+        "startCamera"
+    );
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+let cameraStream = null;
+
+
+button.addEventListener(
+    "click",
+    async function () {
+
+        status.innerText =
+            "Meminta izin kamera...";
+
+        try {
+
+            if (
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ) {
+
+                throw new Error(
+                    "Browser tidak mendukung akses kamera."
+                );
+
+            }
+
+            cameraStream =
+                await navigator.mediaDevices
+                .getUserMedia({
+
+                    video: {
+
+                        facingMode: "user",
+
+                        width: {
+                            ideal: 1280
+                        },
+
+                        height: {
+                            ideal: 720
+                        }
+
+                    },
+
+                    audio: false
+
+                });
+
+            video.srcObject =
+                cameraStream;
+
+            await video.play();
+
+            status.innerText =
+                "✅ KAMERA AKTIF\n\n" +
+                "Kamera HP berhasil dibuka.";
+
+            button.innerText =
+                "KAMERA AKTIF";
+
+            button.style.background =
+                "#1976d2";
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Camera error:",
+                error
+            );
+
+            status.innerText =
+                "❌ GAGAL MEMBUKA KAMERA\n\n" +
+                "Nama error: " +
+                error.name +
+                "\n\n" +
+                error.message;
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
