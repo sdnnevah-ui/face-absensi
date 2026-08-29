@@ -9,7 +9,7 @@
       content="width=device-width, initial-scale=1.0">
 
 <title>
-Face Absensi - Detection & Recognition
+FACE ABSENSI - Siswa & Guru
 </title>
 
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
@@ -24,21 +24,21 @@ body {
 
     margin: 0;
 
-    padding: 20px;
+    padding: 15px;
 
-    background: #111;
+    background: #101010;
 
     color: white;
 
     font-family: Arial, sans-serif;
 
-    text-align: center;
-
 }
 
 .container {
 
-    max-width: 850px;
+    width: 100%;
+
+    max-width: 1000px;
 
     margin: auto;
 
@@ -46,17 +46,73 @@ body {
 
 h1 {
 
-    margin-bottom: 5px;
+    text-align: center;
+
+    margin: 5px 0;
 
 }
 
 .subtitle {
 
+    text-align: center;
+
     color: #aaa;
 
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 
 }
+
+
+/* ============================================================
+   STATUS
+============================================================ */
+
+.status {
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    text-align: center;
+
+    margin: 10px auto;
+
+    font-weight: bold;
+
+    background: #252525;
+
+    color: #aaa;
+
+}
+
+.status.ready {
+
+    background: #063b16;
+
+    color: #55ff77;
+
+}
+
+.status.loading {
+
+    background: #3a3000;
+
+    color: #ffe66b;
+
+}
+
+.status.error {
+
+    background: #4b0808;
+
+    color: #ff6666;
+
+}
+
+
+/* ============================================================
+   CAMERA
+============================================================ */
 
 .camera {
 
@@ -64,7 +120,7 @@ h1 {
 
     width: 100%;
 
-    max-width: 640px;
+    max-width: 700px;
 
     margin: auto;
 
@@ -90,6 +146,11 @@ video {
 
 }
 
+
+/*
+Canvas TIDAK mirror.
+*/
+
 canvas {
 
     position: absolute;
@@ -102,67 +163,38 @@ canvas {
 
     height: 100%;
 
-    transform: scaleX(-1);
+    pointer-events: none;
 
 }
 
-.status {
 
-    margin: 15px auto;
+/* ============================================================
+   BUTTON
+============================================================ */
 
-    padding: 12px;
+.buttons {
 
-    max-width: 640px;
+    text-align: center;
 
-    border-radius: 8px;
-
-    background: #222;
-
-    color: #aaa;
-
-    font-weight: bold;
-
-}
-
-.status.ready {
-
-    background: #063b16;
-
-    color: #55ff77;
-
-}
-
-.status.error {
-
-    background: #4b0808;
-
-    color: #ff7777;
-
-}
-
-.status.loading {
-
-    background: #3a3000;
-
-    color: #ffe66b;
+    margin: 12px 0;
 
 }
 
 button {
 
-    padding: 12px 25px;
+    padding: 11px 18px;
 
-    margin: 10px;
+    margin: 5px;
 
     border: none;
 
     border-radius: 7px;
 
-    background: #1976d2;
-
     color: white;
 
-    font-size: 16px;
+    background: #1976d2;
+
+    font-size: 15px;
 
     cursor: pointer;
 
@@ -182,19 +214,52 @@ button:disabled {
 
 }
 
+.btn-green {
+
+    background: #16833b;
+
+}
+
+.btn-green:hover {
+
+    background: #1ba94c;
+
+}
+
+.btn-red {
+
+    background: #a82222;
+
+}
+
+.btn-red:hover {
+
+    background: #d52b2b;
+
+}
+
+.btn-gray {
+
+    background: #444;
+
+}
+
+
+/* ============================================================
+   INFO
+============================================================ */
+
 .info {
 
-    max-width: 640px;
+    max-width: 700px;
 
-    margin: 20px auto;
+    margin: 15px auto;
 
     padding: 15px;
 
-    background: #1d1d1d;
+    background: #1c1c1c;
 
     border-radius: 8px;
-
-    text-align: left;
 
     font-family: monospace;
 
@@ -220,6 +285,179 @@ button:disabled {
 
 }
 
+
+/* ============================================================
+   DATABASE
+============================================================ */
+
+.database {
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    background: #1c1c1c;
+
+    border-radius: 10px;
+
+}
+
+.database h2 {
+
+    margin-top: 0;
+
+}
+
+.person {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    margin: 7px 0;
+
+    background: #292929;
+
+    border-radius: 7px;
+
+}
+
+.person-info {
+
+    flex: 1;
+
+}
+
+.person-name {
+
+    font-weight: bold;
+
+    font-size: 17px;
+
+}
+
+.person-type {
+
+    color: #aaa;
+
+    font-size: 13px;
+
+}
+
+.delete {
+
+    background: #9c2020;
+
+    padding: 7px 10px;
+
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.modal {
+
+    display: none;
+
+    position: fixed;
+
+    z-index: 1000;
+
+    left: 0;
+
+    top: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background: rgba(0,0,0,0.85);
+
+    overflow: auto;
+
+}
+
+.modal-content {
+
+    width: 95%;
+
+    max-width: 600px;
+
+    margin: 30px auto;
+
+    padding: 20px;
+
+    background: #202020;
+
+    border-radius: 10px;
+
+}
+
+.modal h2 {
+
+    margin-top: 0;
+
+}
+
+label {
+
+    display: block;
+
+    margin-top: 10px;
+
+    margin-bottom: 5px;
+
+    color: #ccc;
+
+}
+
+input,
+
+select {
+
+    width: 100%;
+
+    padding: 11px;
+
+    border-radius: 6px;
+
+    border: 1px solid #555;
+
+    background: #111;
+
+    color: white;
+
+    font-size: 16px;
+
+}
+
+
+/* ============================================================
+   SAMPLE FACE
+============================================================ */
+
+.sample-status {
+
+    margin: 10px 0;
+
+    padding: 10px;
+
+    background: #292929;
+
+    border-radius: 7px;
+
+    text-align: center;
+
+}
+
 </style>
 
 </head>
@@ -235,12 +473,17 @@ button:disabled {
 📷 FACE ABSENSI
 </h1>
 
+
 <div class="subtitle">
 
-ESP32 / Android / PC → Face Detection + Recognition
+Siswa • Guru • Staff
 
 </div>
 
+
+<!-- ============================================================
+     STATUS
+============================================================ -->
 
 <div id="status"
      class="status loading">
@@ -249,6 +492,10 @@ ESP32 / Android / PC → Face Detection + Recognition
 
 </div>
 
+
+<!-- ============================================================
+     CAMERA
+============================================================ -->
 
 <div class="camera">
 
@@ -264,6 +511,12 @@ ESP32 / Android / PC → Face Detection + Recognition
 </div>
 
 
+<!-- ============================================================
+     BUTTON
+============================================================ -->
+
+<div class="buttons">
+
 <button id="startButton"
         onclick="startCamera()"
         disabled>
@@ -273,50 +526,263 @@ ESP32 / Android / PC → Face Detection + Recognition
 </button>
 
 
+<button onclick="openRegister()"
+        class="btn-green">
+
+➕ DAFTAR WAJAH
+
+</button>
+
+
+<button onclick="stopCamera()"
+        class="btn-gray">
+
+⏹ STOP
+
+</button>
+
+</div>
+
+
+<!-- ============================================================
+     LIVE INFORMATION
+============================================================ -->
+
 <div class="info">
 
 <div>
+
 MODEL:
+
 <span id="modelStatus"
       class="yellow">
 
 Loading...
 
 </span>
+
 </div>
 
+
 <div>
+
 FACE:
+
 <span id="faceStatus"
       class="yellow">
 
 -
 
 </span>
+
 </div>
 
+
 <div>
+
 NAMA:
+
 <span id="nameStatus"
       class="yellow">
 
 -
 
 </span>
+
 </div>
 
+
 <div>
-SCORE:
+
+KATEGORI:
+
+<span id="typeStatus"
+      class="yellow">
+
+-
+
+</span>
+
+</div>
+
+
+<div>
+
+JARAK:
+
 <span id="scoreStatus"
       class="yellow">
 
 -
 
 </span>
-</div>
 
 </div>
 
+
+<div>
+
+DATABASE:
+
+<span id="dbStatus"
+      class="green">
+
+0 orang
+
+</span>
+
+</div>
+
+</div>
+
+
+<!-- ============================================================
+     DATABASE
+============================================================ -->
+
+<div class="database">
+
+<h2>
+👥 DATABASE WAJAH
+</h2>
+
+<div id="peopleList">
+
+Belum ada data.
+
+</div>
+
+
+<div class="buttons">
+
+<button onclick="exportDatabase()">
+
+⬇ EXPORT DATABASE
+
+</button>
+
+
+<button onclick="document.getElementById('importFile').click()">
+
+⬆ IMPORT DATABASE
+
+</button>
+
+<input
+    type="file"
+    id="importFile"
+    accept=".json"
+    style="display:none"
+    onchange="importDatabase(event)"
+>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- ============================================================
+     REGISTER MODAL
+============================================================ -->
+
+<div id="registerModal"
+     class="modal">
+
+
+<div class="modal-content">
+
+
+<h2>
+➕ Daftar Wajah Baru
+</h2>
+
+
+<label>
+Nama Lengkap
+</label>
+
+<input
+    id="personName"
+    type="text"
+    placeholder="Contoh: Budi Santoso"
+>
+
+
+<label>
+Kategori
+</label>
+
+<select id="personType">
+
+<option value="SISWA">
+👨‍🎓 Siswa
+</option>
+
+<option value="GURU">
+👨‍🏫 Guru
+</option>
+
+<option value="STAFF">
+👩‍💼 Staff / Tendik
+</option>
+
+</select>
+
+
+<label>
+Nomor Identitas
+</label>
+
+<input
+    id="personId"
+    type="text"
+    placeholder="NISN / NIP / NIK / ID"
+>
+
+
+<div class="sample-status"
+     id="sampleStatus">
+
+Belum mengambil sampel wajah.
+
+</div>
+
+
+<div class="buttons">
+
+<button
+    onclick="captureFace()"
+    class="btn-green">
+
+📸 AMBIL SAMPEL WAJAH
+
+</button>
+
+
+<button
+    onclick="savePerson()"
+    class="btn-green">
+
+💾 SIMPAN
+
+</button>
+
+
+<button
+    onclick="closeRegister()"
+    class="btn-gray">
+
+BATAL
+
+</button>
+
+</div>
+
+
+</div>
 
 </div>
 
@@ -325,10 +791,13 @@ SCORE:
 
 
 // ============================================================
-// CONFIGURATION
+// CONFIG
 // ============================================================
 
 const MODEL_URL = "./models";
+
+const STORAGE_KEY =
+    "face_absensi_database_v1";
 
 
 // ============================================================
@@ -353,20 +822,303 @@ const faceStatus =
 const nameStatus =
     document.getElementById("nameStatus");
 
+const typeStatus =
+    document.getElementById("typeStatus");
+
 const scoreStatus =
     document.getElementById("scoreStatus");
 
 const startButton =
     document.getElementById("startButton");
 
+const dbStatus =
+    document.getElementById("dbStatus");
+
 
 // ============================================================
-// FACE DATABASE
-//
-// NANTI KITA ISI FOTO/NAMA DI SINI
+// DATABASE
 // ============================================================
 
-const labeledDescriptors = [];
+let people = [];
+
+let faceMatcher = null;
+
+
+// ============================================================
+// CAMERA
+// ============================================================
+
+let cameraStream = null;
+
+let detecting = false;
+
+
+// ============================================================
+// REGISTER SAMPLE
+// ============================================================
+
+let capturedDescriptor = null;
+
+
+// ============================================================
+// LOAD DATABASE
+// ============================================================
+
+function loadDatabase()
+{
+
+    try
+    {
+
+        const saved =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if (!saved)
+        {
+
+            people = [];
+
+            return;
+
+        }
+
+        people =
+            JSON.parse(saved);
+
+        rebuildFaceMatcher();
+
+        updateDatabaseUI();
+
+    }
+
+    catch(error)
+    {
+
+        console.error(
+            "Database error:",
+            error);
+
+        people = [];
+
+    }
+
+}
+
+
+// ============================================================
+// SAVE DATABASE
+// ============================================================
+
+function saveDatabase()
+{
+
+    localStorage.setItem(
+
+        STORAGE_KEY,
+
+        JSON.stringify(people)
+
+    );
+
+}
+
+
+// ============================================================
+// REBUILD FACE MATCHER
+// ============================================================
+
+function rebuildFaceMatcher()
+{
+
+    if (people.length === 0)
+    {
+
+        faceMatcher = null;
+
+        return;
+
+    }
+
+
+    const descriptors =
+        [];
+
+
+    people.forEach(
+        person =>
+        {
+
+            person.descriptors.forEach(
+                descriptor =>
+                {
+
+                    descriptors.push(
+
+                        new faceapi.LabeledFaceDescriptors(
+
+                            person.id,
+
+                            [
+
+                                new Float32Array(
+                                    descriptor
+                                )
+
+                            ]
+
+                        )
+
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+    FaceMatcher dapat menerima beberapa
+    descriptor untuk satu orang.
+    */
+
+    faceMatcher =
+        new faceapi.FaceMatcher(
+
+            descriptors,
+
+            0.52
+
+        );
+
+}
+
+
+// ============================================================
+// DATABASE UI
+// ============================================================
+
+function updateDatabaseUI()
+{
+
+    dbStatus.innerText =
+        people.length +
+        " orang";
+
+
+    const list =
+        document.getElementById(
+            "peopleList"
+        );
+
+
+    if (people.length === 0)
+    {
+
+        list.innerHTML =
+            "Belum ada data.";
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    people.forEach(
+        person =>
+        {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "person";
+
+
+            div.innerHTML = `
+
+                <div class="person-info">
+
+                    <div class="person-name">
+
+                        ${escapeHTML(person.name)}
+
+                    </div>
+
+                    <div class="person-type">
+
+                        ${getTypeIcon(person.type)}
+
+                        ${escapeHTML(person.type)}
+
+                        • ${escapeHTML(person.identity)}
+
+                        • ${person.descriptors.length} sampel
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="delete"
+                    onclick="deletePerson('${person.id}')">
+
+                    🗑 HAPUS
+
+                </button>
+
+            `;
+
+
+            list.appendChild(div);
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+
+function escapeHTML(text)
+{
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+
+// ============================================================
+// TYPE ICON
+// ============================================================
+
+function getTypeIcon(type)
+{
+
+    if (type === "GURU")
+        return "👨‍🏫";
+
+    if (type === "STAFF")
+        return "👩‍💼";
+
+    return "👨‍🎓";
+
+}
 
 
 // ============================================================
@@ -390,10 +1142,6 @@ async function loadModels()
             .loadFromUri(MODEL_URL);
 
 
-        console.log(
-            "Tiny Face Detector loaded");
-
-
         statusBox.innerText =
             "⏳ Memuat Face Landmark 68...";
 
@@ -402,20 +1150,12 @@ async function loadModels()
             .loadFromUri(MODEL_URL);
 
 
-        console.log(
-            "Face Landmark 68 loaded");
-
-
         statusBox.innerText =
             "⏳ Memuat Face Recognition...";
 
 
         await faceapi.nets.faceRecognitionNet
             .loadFromUri(MODEL_URL);
-
-
-        console.log(
-            "Face Recognition loaded");
 
 
         modelStatus.innerText =
@@ -436,14 +1176,12 @@ async function loadModels()
             false;
 
 
-        console.log(
-            "================================");
+        loadDatabase();
+
 
         console.log(
-            "ALL FACE-API MODELS READY");
-
-        console.log(
-            "================================");
+            "Face API ready"
+        );
 
     }
 
@@ -451,8 +1189,8 @@ async function loadModels()
     {
 
         console.error(
-            "MODEL ERROR:",
-            error);
+            error
+        );
 
 
         statusBox.className =
@@ -485,6 +1223,10 @@ async function startCamera()
     try
     {
 
+        if (cameraStream)
+            return;
+
+
         statusBox.className =
             "status loading";
 
@@ -492,7 +1234,7 @@ async function startCamera()
             "⏳ Meminta akses kamera...";
 
 
-        const stream =
+        cameraStream =
             await navigator.mediaDevices
                 .getUserMedia({
 
@@ -516,7 +1258,17 @@ async function startCamera()
 
 
         video.srcObject =
-            stream;
+            cameraStream;
+
+
+        await video.play();
+
+
+        canvas.width =
+            video.videoWidth;
+
+        canvas.height =
+            video.videoHeight;
 
 
         statusBox.className =
@@ -530,23 +1282,11 @@ async function startCamera()
             true;
 
 
-        video.addEventListener(
-            "loadedmetadata",
-            () =>
-            {
+        detecting =
+            true;
 
-                canvas.width =
-                    video.videoWidth;
 
-                canvas.height =
-                    video.videoHeight;
-
-                startDetection();
-
-            },
-            {
-                once: true
-            });
+        detectLoop();
 
     }
 
@@ -554,7 +1294,9 @@ async function startCamera()
     {
 
         console.error(
-            error);
+            "Camera error:",
+            error
+        );
 
 
         statusBox.className =
@@ -568,7 +1310,6 @@ async function startCamera()
         faceStatus.innerText =
             error.name;
 
-
         faceStatus.className =
             "red";
 
@@ -578,27 +1319,53 @@ async function startCamera()
 
 
 // ============================================================
-// FACE DETECTION
+// STOP CAMERA
 // ============================================================
 
-let detecting = false;
-
-
-async function startDetection()
+function stopCamera()
 {
 
-    if (detecting)
-        return;
+    detecting = false;
 
 
-    detecting = true;
+    if (cameraStream)
+    {
+
+        cameraStream
+            .getTracks()
+            .forEach(
+                track =>
+                    track.stop()
+            );
+
+        cameraStream = null;
+
+    }
 
 
-    console.log(
-        "Face detection started");
+    video.srcObject = null;
 
 
-    detectLoop();
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    startButton.disabled =
+        false;
+
+
+    statusBox.className =
+        "status";
+
+    statusBox.innerText =
+        "⏹ KAMERA BERHENTI";
 
 }
 
@@ -610,11 +1377,16 @@ async function startDetection()
 async function detectLoop()
 {
 
+    if (!detecting)
+        return;
+
+
     if (!video.videoWidth)
     {
 
         requestAnimationFrame(
-            detectLoop);
+            detectLoop
+        );
 
         return;
 
@@ -645,8 +1417,8 @@ async function detectLoop()
 
 
         drawResults(
-            detections);
-
+            detections
+        );
 
     }
 
@@ -655,14 +1427,16 @@ async function detectLoop()
 
         console.error(
             "Detection error:",
-            error);
+            error
+        );
 
     }
 
 
     setTimeout(
         detectLoop,
-        100);
+        120
+    );
 
 }
 
@@ -672,8 +1446,23 @@ async function detectLoop()
 // ============================================================
 
 function drawResults(
-    detections)
+    detections
+)
 {
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    ctx.clearRect(
+
+        0,
+        0,
+        canvas.width,
+        canvas.height
+
+    );
+
 
     const displaySize = {
 
@@ -687,30 +1476,36 @@ function drawResults(
 
 
     faceapi.matchDimensions(
+
         canvas,
-        displaySize);
+
+        displaySize
+
+    );
 
 
-    const resized =
+    let resized =
         faceapi.resizeResults(
+
             detections,
-            displaySize);
 
+            displaySize
 
-    const ctx =
-        canvas.getContext("2d");
-
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height);
+        );
 
 
     // ========================================================
-    // NO FACE
+    // IMPORTANT
     // ========================================================
+    //
+    // Video mirror.
+    //
+    // Canvas tidak mirror.
+    //
+    // Jadi koordinat wajah harus dibalik
+    // agar kotak mengikuti gambar mirror.
+    //
+
 
     if (resized.length === 0)
     {
@@ -721,23 +1516,19 @@ function drawResults(
         faceStatus.className =
             "yellow";
 
-
         nameStatus.innerText =
             "-";
 
+        typeStatus.innerText =
+            "-";
 
         scoreStatus.innerText =
             "-";
-
 
         return;
 
     }
 
-
-    // ========================================================
-    // FACE DETECTED
-    // ========================================================
 
     faceStatus.innerText =
         resized.length +
@@ -747,19 +1538,34 @@ function drawResults(
         "green";
 
 
-    // ========================================================
-    // LOOP ALL FACES
-    // ========================================================
-
     resized.forEach(
-        (result, index) =>
+        (result) =>
         {
 
-            const box =
+            const originalBox =
                 result.detection.box;
 
 
-            const score =
+            const box = {
+
+                x:
+                    canvas.width -
+                    originalBox.x -
+                    originalBox.width,
+
+                y:
+                    originalBox.y,
+
+                width:
+                    originalBox.width,
+
+                height:
+                    originalBox.height
+
+            };
+
+
+            const detectionScore =
                 result.detection.score;
 
 
@@ -788,20 +1594,20 @@ function drawResults(
 
 
             // =================================================
-            // SCORE
+            // DETECTION SCORE
             // =================================================
 
             ctx.fillStyle =
                 "#00ff55";
 
             ctx.font =
-                "bold 18px Arial";
+                "bold 17px Arial";
 
 
             ctx.fillText(
 
                 "FACE " +
-                (score * 100)
+                (detectionScore * 100)
                     .toFixed(1) +
                 "%",
 
@@ -809,7 +1615,8 @@ function drawResults(
 
                 Math.max(
                     20,
-                    box.y - 8)
+                    box.y - 8
+                )
 
             );
 
@@ -818,139 +1625,124 @@ function drawResults(
             // RECOGNITION
             // =================================================
 
-            if (
-                labeledDescriptors.length > 0
-            )
-            {
+            recognizeFace(
 
-                recognizeFace(
-                    result,
-                    box);
+                result,
 
-            }
+                box
 
-            else
-            {
+            );
 
-                ctx.fillStyle =
-                    "#ffe66b";
-
-                ctx.font =
-                    "bold 18px Arial";
-
-
-                ctx.fillText(
-
-                    "UNKNOWN",
-
-                    box.x,
-
-                    box.y +
-                    box.height +
-                    25
-
-                );
-
-
-                nameStatus.innerText =
-                    "UNKNOWN";
-
-            }
-
-        });
+        }
+    );
 
 }
 
 
 // ============================================================
-// FACE RECOGNITION
+// RECOGNITION
 // ============================================================
 
 function recognizeFace(
     result,
-    box)
+    box
+)
 {
+
+    if (!faceMatcher)
+    {
+
+        drawUnknown(
+            box
+        );
+
+        nameStatus.innerText =
+            "UNKNOWN";
+
+        typeStatus.innerText =
+            "-";
+
+        scoreStatus.innerText =
+            "-";
+
+        return;
+
+    }
+
 
     try
     {
 
-        const faceMatcher =
-            new faceapi.FaceMatcher(
-                labeledDescriptors,
-                0.6);
-
-
         const bestMatch =
             faceMatcher.findBestMatch(
-                result.descriptor);
+
+                result.descriptor
+
+            );
 
 
-        const name =
-            bestMatch.label;
+        const person =
+            people.find(
+                p =>
+                    p.id ===
+                    bestMatch.label
+            );
 
 
         const distance =
             bestMatch.distance;
 
 
-        nameStatus.innerText =
-            name;
-
-
         scoreStatus.innerText =
             distance.toFixed(3);
 
 
-        const ctx =
-            canvas.getContext("2d");
-
+        // ====================================================
+        // KNOWN
+        // ====================================================
 
         if (
-            name !== "unknown"
+            bestMatch.label !== "unknown"
+            &&
+            person
         )
         {
 
-            ctx.fillStyle =
-                "#00ff55";
+            nameStatus.innerText =
+                person.name;
 
-            ctx.font =
-                "bold 20px Arial";
+            typeStatus.innerText =
+                person.type;
 
 
-            ctx.fillText(
+            drawKnown(
 
-                "✓ " + name,
+                box,
 
-                box.x,
+                person.name,
 
-                box.y +
-                box.height +
-                28
+                person.type
 
             );
 
         }
 
+        // ====================================================
+        // UNKNOWN
+        // ====================================================
+
         else
         {
 
-            ctx.fillStyle =
-                "#ff5555";
+            nameStatus.innerText =
+                "UNKNOWN";
 
-            ctx.font =
-                "bold 20px Arial";
+            typeStatus.innerText =
+                "-";
 
 
-            ctx.fillText(
-
-                "UNKNOWN",
-
-                box.x,
-
-                box.y +
-                box.height +
-                28
-
+            drawUnknown(
+                box
             );
 
         }
@@ -962,9 +1754,650 @@ function recognizeFace(
 
         console.error(
             "Recognition error:",
-            error);
+            error
+        );
 
     }
+
+}
+
+
+// ============================================================
+// DRAW KNOWN
+// ============================================================
+
+function drawKnown(
+    box,
+    name,
+    type
+)
+{
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    ctx.strokeStyle =
+        "#00ff55";
+
+    ctx.lineWidth =
+        4;
+
+
+    ctx.strokeRect(
+
+        box.x,
+
+        box.y,
+
+        box.width,
+
+        box.height
+
+    );
+
+
+    const label =
+        "✓ " +
+        name +
+        " [" +
+        type +
+        "]";
+
+
+    ctx.font =
+        "bold 18px Arial";
+
+
+    const width =
+        ctx.measureText(
+            label
+        ).width;
+
+
+    const y =
+        box.y +
+        box.height +
+        5;
+
+
+    ctx.fillStyle =
+        "rgba(0,255,80,0.85)";
+
+
+    ctx.fillRect(
+
+        box.x,
+
+        y,
+
+        width + 12,
+
+        28
+
+    );
+
+
+    ctx.fillStyle =
+        "#000";
+
+
+    ctx.fillText(
+
+        label,
+
+        box.x + 6,
+
+        y + 20
+
+    );
+
+}
+
+
+// ============================================================
+// DRAW UNKNOWN
+// ============================================================
+
+function drawUnknown(
+    box
+)
+{
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    ctx.strokeStyle =
+        "#ff4444";
+
+    ctx.lineWidth =
+        4;
+
+
+    ctx.strokeRect(
+
+        box.x,
+
+        box.y,
+
+        box.width,
+
+        box.height
+
+    );
+
+
+    const label =
+        "UNKNOWN";
+
+
+    ctx.font =
+        "bold 18px Arial";
+
+
+    const width =
+        ctx.measureText(
+            label
+        ).width;
+
+
+    const y =
+        box.y +
+        box.height +
+        5;
+
+
+    ctx.fillStyle =
+        "rgba(255,60,60,0.85)";
+
+
+    ctx.fillRect(
+
+        box.x,
+
+        y,
+
+        width + 12,
+
+        28
+
+    );
+
+
+    ctx.fillStyle =
+        "#fff";
+
+
+    ctx.fillText(
+
+        label,
+
+        box.x + 6,
+
+        y + 20
+
+    );
+
+}
+
+
+// ============================================================
+// REGISTER MODAL
+// ============================================================
+
+function openRegister()
+{
+
+    if (!cameraStream)
+    {
+
+        alert(
+            "Nyalakan kamera terlebih dahulu."
+        );
+
+        return;
+
+    }
+
+
+    capturedDescriptor =
+        null;
+
+
+    document.getElementById(
+        "personName"
+    ).value = "";
+
+
+    document.getElementById(
+        "personId"
+    ).value = "";
+
+
+    document.getElementById(
+        "personType"
+    ).value =
+        "SISWA";
+
+
+    document.getElementById(
+        "sampleStatus"
+    ).innerText =
+        "Belum mengambil sampel wajah.";
+
+
+    document.getElementById(
+        "registerModal"
+    ).style.display =
+        "block";
+
+}
+
+
+// ============================================================
+// CLOSE REGISTER
+// ============================================================
+
+function closeRegister()
+{
+
+    document.getElementById(
+        "registerModal"
+    ).style.display =
+        "none";
+
+}
+
+
+// ============================================================
+// CAPTURE FACE
+// ============================================================
+
+async function captureFace()
+{
+
+    const sampleStatus =
+        document.getElementById(
+            "sampleStatus"
+        );
+
+
+    sampleStatus.innerText =
+        "⏳ Mendeteksi wajah...";
+
+
+    try
+    {
+
+        const detection =
+            await faceapi
+                .detectSingleFace(
+
+                    video,
+
+                    new faceapi
+                        .TinyFaceDetectorOptions({
+
+                            inputSize: 320,
+
+                            scoreThreshold: 0.5
+
+                        })
+
+                )
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+
+
+        if (!detection)
+        {
+
+            sampleStatus.innerText =
+                "❌ Wajah tidak ditemukan. Hadapkan wajah ke kamera.";
+
+            return;
+
+        }
+
+
+        capturedDescriptor =
+            Array.from(
+                detection.descriptor
+            );
+
+
+        sampleStatus.innerText =
+            "✅ Sampel wajah berhasil diambil.";
+
+    }
+
+    catch(error)
+    {
+
+        console.error(
+            error
+        );
+
+
+        sampleStatus.innerText =
+            "❌ Gagal mengambil sampel.";
+
+    }
+
+}
+
+
+// ============================================================
+// SAVE PERSON
+// ============================================================
+
+function savePerson()
+{
+
+    const name =
+        document.getElementById(
+            "personName"
+        ).value.trim();
+
+
+    const type =
+        document.getElementById(
+            "personType"
+        ).value;
+
+
+    const identity =
+        document.getElementById(
+            "personId"
+        ).value.trim();
+
+
+    if (!name)
+    {
+
+        alert(
+            "Nama harus diisi."
+        );
+
+        return;
+
+    }
+
+
+    if (!identity)
+    {
+
+        alert(
+            "Nomor identitas harus diisi."
+        );
+
+        return;
+
+    }
+
+
+    if (!capturedDescriptor)
+    {
+
+        alert(
+            "Ambil sampel wajah terlebih dahulu."
+        );
+
+        return;
+
+    }
+
+
+    const person = {
+
+        id:
+            "person_" +
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .substring(2),
+
+        name:
+            name,
+
+        type:
+            type,
+
+        identity:
+            identity,
+
+        descriptors:
+            [
+                capturedDescriptor
+            ],
+
+        created:
+            new Date().toISOString()
+
+    };
+
+
+    people.push(
+        person
+    );
+
+
+    saveDatabase();
+
+    rebuildFaceMatcher();
+
+    updateDatabaseUI();
+
+
+    alert(
+        "Data " +
+        name +
+        " berhasil disimpan."
+    );
+
+
+    closeRegister();
+
+}
+
+
+// ============================================================
+// DELETE PERSON
+// ============================================================
+
+function deletePerson(
+    id
+)
+{
+
+    const person =
+        people.find(
+            p =>
+                p.id === id
+        );
+
+
+    if (!person)
+        return;
+
+
+    if (
+        !confirm(
+            "Hapus data " +
+            person.name +
+            "?"
+        )
+    )
+        return;
+
+
+    people =
+        people.filter(
+            p =>
+                p.id !== id
+        );
+
+
+    saveDatabase();
+
+    rebuildFaceMatcher();
+
+    updateDatabaseUI();
+
+}
+
+
+// ============================================================
+// EXPORT DATABASE
+// ============================================================
+
+function exportDatabase()
+{
+
+    if (people.length === 0)
+    {
+
+        alert(
+            "Database masih kosong."
+        );
+
+        return;
+
+    }
+
+
+    const data =
+        JSON.stringify(
+            people,
+            null,
+            2
+        );
+
+
+    const blob =
+        new Blob(
+
+            [data],
+
+            {
+                type:
+                    "application/json"
+            }
+
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.href =
+        url;
+
+
+    a.download =
+        "database-wajah.json";
+
+
+    a.click();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+// ============================================================
+// IMPORT DATABASE
+// ============================================================
+
+function importDatabase(
+    event
+)
+{
+
+    const file =
+        event.target.files[0];
+
+
+    if (!file)
+        return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function()
+        {
+
+            try
+            {
+
+                const imported =
+                    JSON.parse(
+                        reader.result
+                    );
+
+
+                if (!Array.isArray(
+                    imported
+                ))
+                {
+
+                    throw new Error(
+                        "Format database tidak valid."
+                    );
+
+                }
+
+
+                people =
+                    imported;
+
+
+                saveDatabase();
+
+                rebuildFaceMatcher();
+
+                updateDatabaseUI();
+
+
+                alert(
+                    "Database berhasil diimport."
+                );
+
+            }
+
+            catch(error)
+            {
+
+                alert(
+                    "Gagal import database: " +
+                    error.message
+                );
+
+            }
+
+        };
+
+
+    reader.readAsText(
+        file
+    );
 
 }
 
@@ -974,9 +2407,43 @@ function recognizeFace(
 // ============================================================
 
 window.addEventListener(
-    "load",
-    loadModels);
 
+    "load",
+
+    loadModels
+
+);
+
+
+// ============================================================
+// CLOSE MODAL WHEN CLICK OUTSIDE
+// ============================================================
+
+window.addEventListener(
+
+    "click",
+
+    function(event)
+    {
+
+        const modal =
+            document.getElementById(
+                "registerModal"
+            );
+
+
+        if (
+            event.target === modal
+        )
+        {
+
+            closeRegister();
+
+        }
+
+    }
+
+);
 
 </script>
 
