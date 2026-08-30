@@ -50,6 +50,9 @@ input,select{width:100%;padding:11px;border-radius:6px;border:1px solid #555;bac
 <button id="startButton" onclick="startCamera()" disabled>▶ START CAMERA</button>
 <button onclick="openRegister()" class="btn-green">➕ DAFTAR WAJAH</button>
 <button onclick="stopCamera()" class="btn-gray">⏹ STOP</button>
+ <button onclick="testSendAttendance()" class="btn-orange">
+🧪 TEST KIRIM ABSENSI
+</button>
 </div>
 
 <div class="info">
@@ -450,7 +453,191 @@ async function sendToGoogleSheets(item){
   sheetStatus.innerText="❌ Gagal kirim";sheetStatus.className="red";
  }
 }
+async function testSendAttendance() {
 
+    const url =
+        localStorage.getItem(SCRIPT_URL_KEY) || "";
+
+    if (!url) {
+
+        alert(
+            "URL Google Apps Script belum diatur."
+        );
+
+        return;
+    }
+
+
+    const testItem = {
+
+        id:
+            "test_" +
+            Date.now(),
+
+        date:
+            dateKey(),
+
+        time:
+            timeText(),
+
+        timestamp:
+            new Date().toISOString(),
+
+        personId:
+            "TEST001",
+
+        name:
+            "TEST DARI GITHUB",
+
+        type:
+            "GURU",
+
+        identity:
+            "TEST-ID",
+
+        status:
+            "HADIR"
+
+    };
+
+
+    sheetStatus.innerText =
+        "⏳ Mengirim data TEST...";
+
+    sheetStatus.className =
+        "yellow";
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                url,
+
+                {
+
+                    method: "POST",
+
+                    mode: "cors",
+
+                    headers: {
+
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            action:
+                                "attendance",
+
+                            data:
+                                testItem
+
+                        })
+
+                }
+
+            );
+
+
+        const text =
+            await response.text();
+
+
+        console.log(
+            "Response Apps Script:",
+            text
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                text
+            );
+
+        }
+
+
+        let result;
+
+        try {
+
+            result =
+                JSON.parse(text);
+
+        }
+
+        catch (e) {
+
+            throw new Error(
+                "Response bukan JSON: " +
+                text
+            );
+
+        }
+
+
+        if (!result.success) {
+
+            throw new Error(
+                result.error ||
+                "Apps Script menolak data."
+            );
+
+        }
+
+
+        sheetStatus.innerText =
+            "✅ TEST BERHASIL TERKIRIM";
+
+        sheetStatus.className =
+            "green";
+
+
+        attendanceStatus.innerText =
+            "✅ TEST MASUK GOOGLE SHEETS";
+
+        attendanceStatus.className =
+            "green";
+
+
+        alert(
+            "TEST BERHASIL!\n\n" +
+            "Cek Sheet ABSENSI."
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "TEST GOOGLE SHEETS:",
+            error
+        );
+
+
+        sheetStatus.innerText =
+            "❌ TEST GAGAL";
+
+        sheetStatus.className =
+            "red";
+
+
+        alert(
+
+            "GAGAL MENGIRIM DATA\n\n" +
+            error.message
+
+        );
+
+    }
+
+}
 /* ================= PAGE ================= */
 window.addEventListener("load",loadModels);
 window.addEventListener("click",e=>{
