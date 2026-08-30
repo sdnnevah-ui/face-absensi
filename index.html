@@ -1,2453 +1,462 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>
-FACE ABSENSI - Siswa & Guru
-</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FACE ABSENSI - Siswa & Guru</title>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-
 <style>
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-
-    margin: 0;
-
-    padding: 15px;
-
-    background: #101010;
-
-    color: white;
-
-    font-family: Arial, sans-serif;
-
-}
-
-.container {
-
-    width: 100%;
-
-    max-width: 1000px;
-
-    margin: auto;
-
-}
-
-h1 {
-
-    text-align: center;
-
-    margin: 5px 0;
-
-}
-
-.subtitle {
-
-    text-align: center;
-
-    color: #aaa;
-
-    margin-bottom: 15px;
-
-}
-
-
-/* ============================================================
-   STATUS
-============================================================ */
-
-.status {
-
-    padding: 12px;
-
-    border-radius: 8px;
-
-    text-align: center;
-
-    margin: 10px auto;
-
-    font-weight: bold;
-
-    background: #252525;
-
-    color: #aaa;
-
-}
-
-.status.ready {
-
-    background: #063b16;
-
-    color: #55ff77;
-
-}
-
-.status.loading {
-
-    background: #3a3000;
-
-    color: #ffe66b;
-
-}
-
-.status.error {
-
-    background: #4b0808;
-
-    color: #ff6666;
-
-}
-
-
-/* ============================================================
-   CAMERA
-============================================================ */
-
-.camera {
-
-    position: relative;
-
-    width: 100%;
-
-    max-width: 700px;
-
-    margin: auto;
-
-    background: black;
-
-    border: 2px solid #444;
-
-    border-radius: 10px;
-
-    overflow: hidden;
-
-}
-
-video {
-
-    display: block;
-
-    width: 100%;
-
-    height: auto;
-
-    transform: scaleX(-1);
-
-}
-
-
-/*
-Canvas TIDAK mirror.
-*/
-
-canvas {
-
-    position: absolute;
-
-    top: 0;
-
-    left: 0;
-
-    width: 100%;
-
-    height: 100%;
-
-    pointer-events: none;
-
-}
-
-
-/* ============================================================
-   BUTTON
-============================================================ */
-
-.buttons {
-
-    text-align: center;
-
-    margin: 12px 0;
-
-}
-
-button {
-
-    padding: 11px 18px;
-
-    margin: 5px;
-
-    border: none;
-
-    border-radius: 7px;
-
-    color: white;
-
-    background: #1976d2;
-
-    font-size: 15px;
-
-    cursor: pointer;
-
-}
-
-button:hover {
-
-    background: #2196f3;
-
-}
-
-button:disabled {
-
-    background: #555;
-
-    cursor: not-allowed;
-
-}
-
-.btn-green {
-
-    background: #16833b;
-
-}
-
-.btn-green:hover {
-
-    background: #1ba94c;
-
-}
-
-.btn-red {
-
-    background: #a82222;
-
-}
-
-.btn-red:hover {
-
-    background: #d52b2b;
-
-}
-
-.btn-gray {
-
-    background: #444;
-
-}
-
-
-/* ============================================================
-   INFO
-============================================================ */
-
-.info {
-
-    max-width: 700px;
-
-    margin: 15px auto;
-
-    padding: 15px;
-
-    background: #1c1c1c;
-
-    border-radius: 8px;
-
-    font-family: monospace;
-
-    line-height: 1.7;
-
-}
-
-.green {
-
-    color: #00ff66;
-
-}
-
-.yellow {
-
-    color: #ffe66b;
-
-}
-
-.red {
-
-    color: #ff5555;
-
-}
-
-
-/* ============================================================
-   DATABASE
-============================================================ */
-
-.database {
-
-    margin-top: 20px;
-
-    padding: 15px;
-
-    background: #1c1c1c;
-
-    border-radius: 10px;
-
-}
-
-.database h2 {
-
-    margin-top: 0;
-
-}
-
-.person {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 10px;
-
-    padding: 10px;
-
-    margin: 7px 0;
-
-    background: #292929;
-
-    border-radius: 7px;
-
-}
-
-.person-info {
-
-    flex: 1;
-
-}
-
-.person-name {
-
-    font-weight: bold;
-
-    font-size: 17px;
-
-}
-
-.person-type {
-
-    color: #aaa;
-
-    font-size: 13px;
-
-}
-
-.delete {
-
-    background: #9c2020;
-
-    padding: 7px 10px;
-
-}
-
-
-/* ============================================================
-   MODAL
-============================================================ */
-
-.modal {
-
-    display: none;
-
-    position: fixed;
-
-    z-index: 1000;
-
-    left: 0;
-
-    top: 0;
-
-    width: 100%;
-
-    height: 100%;
-
-    background: rgba(0,0,0,0.85);
-
-    overflow: auto;
-
-}
-
-.modal-content {
-
-    width: 95%;
-
-    max-width: 600px;
-
-    margin: 30px auto;
-
-    padding: 20px;
-
-    background: #202020;
-
-    border-radius: 10px;
-
-}
-
-.modal h2 {
-
-    margin-top: 0;
-
-}
-
-label {
-
-    display: block;
-
-    margin-top: 10px;
-
-    margin-bottom: 5px;
-
-    color: #ccc;
-
-}
-
-input,
-
-select {
-
-    width: 100%;
-
-    padding: 11px;
-
-    border-radius: 6px;
-
-    border: 1px solid #555;
-
-    background: #111;
-
-    color: white;
-
-    font-size: 16px;
-
-}
-
-
-/* ============================================================
-   SAMPLE FACE
-============================================================ */
-
-.sample-status {
-
-    margin: 10px 0;
-
-    padding: 10px;
-
-    background: #292929;
-
-    border-radius: 7px;
-
-    text-align: center;
-
-}
-
+*{box-sizing:border-box}
+body{margin:0;padding:15px;background:#101010;color:#fff;font-family:Arial,sans-serif}
+.container{width:100%;max-width:1050px;margin:auto}
+h1{text-align:center;margin:5px 0}.subtitle{text-align:center;color:#aaa;margin-bottom:15px}
+.status{padding:12px;border-radius:8px;text-align:center;margin:10px auto;font-weight:bold;background:#252525;color:#aaa}
+.status.ready{background:#063b16;color:#55ff77}.status.loading{background:#3a3000;color:#ffe66b}.status.error{background:#4b0808;color:#ff6666}
+.camera{position:relative;width:100%;max-width:700px;margin:auto;background:#000;border:2px solid #444;border-radius:10px;overflow:hidden}
+video{display:block;width:100%;height:auto;transform:scaleX(-1)}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.buttons{text-align:center;margin:12px 0}
+button{padding:11px 18px;margin:5px;border:0;border-radius:7px;color:#fff;background:#1976d2;font-size:15px;cursor:pointer}
+button:hover{background:#2196f3}button:disabled{background:#555;cursor:not-allowed}
+.btn-green{background:#16833b}.btn-red{background:#a82222}.btn-gray{background:#444}.btn-orange{background:#b66a00}
+.info,.database,.attendance{max-width:700px;margin:15px auto;padding:15px;background:#1c1c1c;border-radius:8px}
+.info{font-family:monospace;line-height:1.7}.green{color:#00ff66}.yellow{color:#ffe66b}.red{color:#ff5555}
+.database h2,.attendance h2{margin-top:0}
+.person,.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;margin:7px 0;background:#292929;border-radius:7px}
+.person-info{flex:1}.person-name{font-weight:bold;font-size:17px}.person-type{color:#aaa;font-size:13px}
+.delete{background:#9c2020;padding:7px 10px}.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px;border-bottom:1px solid #444;text-align:left;white-space:nowrap}th{color:#ffe66b}
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.85);overflow:auto}
+.modal-content{width:95%;max-width:600px;margin:30px auto;padding:20px;background:#202020;border-radius:10px}
+.modal h2{margin-top:0}label{display:block;margin-top:10px;margin-bottom:5px;color:#ccc}
+input,select{width:100%;padding:11px;border-radius:6px;border:1px solid #555;background:#111;color:#fff;font-size:16px}
+.sample-status{margin:10px 0;padding:10px;background:#292929;border-radius:7px;text-align:center}
+.small{font-size:12px;color:#aaa}.ok{color:#55ff77}.bad{color:#ff7777}
 </style>
-
 </head>
-
-
 <body>
-
-
 <div class="container">
+<h1>📷 FACE ABSENSI</h1>
+<div class="subtitle">Siswa • Guru • Staff — Face Recognition + Google Sheets</div>
 
-
-<h1>
-📷 FACE ABSENSI
-</h1>
-
-
-<div class="subtitle">
-
-Siswa • Guru • Staff
-
-</div>
-
-
-<!-- ============================================================
-     STATUS
-============================================================ -->
-
-<div id="status"
-     class="status loading">
-
-⏳ Memuat model AI...
-
-</div>
-
-
-<!-- ============================================================
-     CAMERA
-============================================================ -->
+<div id="status" class="status loading">⏳ Memuat model AI...</div>
 
 <div class="camera">
-
-<video id="video"
-       autoplay
-       muted
-       playsinline>
-</video>
-
-<canvas id="overlay">
-</canvas>
-
+<video id="video" autoplay muted playsinline></video>
+<canvas id="overlay"></canvas>
 </div>
-
-
-<!-- ============================================================
-     BUTTON
-============================================================ -->
 
 <div class="buttons">
-
-<button id="startButton"
-        onclick="startCamera()"
-        disabled>
-
-▶ START CAMERA
-
-</button>
-
-
-<button onclick="openRegister()"
-        class="btn-green">
-
-➕ DAFTAR WAJAH
-
-</button>
-
-
-<button onclick="stopCamera()"
-        class="btn-gray">
-
-⏹ STOP
-
-</button>
-
+<button id="startButton" onclick="startCamera()" disabled>▶ START CAMERA</button>
+<button onclick="openRegister()" class="btn-green">➕ DAFTAR WAJAH</button>
+<button onclick="stopCamera()" class="btn-gray">⏹ STOP</button>
 </div>
-
-
-<!-- ============================================================
-     LIVE INFORMATION
-============================================================ -->
 
 <div class="info">
-
-<div>
-
-MODEL:
-
-<span id="modelStatus"
-      class="yellow">
-
-Loading...
-
-</span>
-
+<div>MODEL: <span id="modelStatus" class="yellow">Loading...</span></div>
+<div>FACE: <span id="faceStatus" class="yellow">-</span></div>
+<div>NAMA: <span id="nameStatus" class="yellow">-</span></div>
+<div>KATEGORI: <span id="typeStatus" class="yellow">-</span></div>
+<div>JARAK: <span id="scoreStatus" class="yellow">-</span></div>
+<div>ABSENSI: <span id="attendanceStatus" class="yellow">-</span></div>
+<div>DATABASE: <span id="dbStatus" class="green">0 orang</span></div>
+<div>GOOGLE SHEETS: <span id="sheetStatus" class="yellow">Belum dikonfigurasi</span></div>
 </div>
 
-
-<div>
-
-FACE:
-
-<span id="faceStatus"
-      class="yellow">
-
--
-
-</span>
-
+<div class="attendance">
+<h2>🕘 Absensi Hari Ini</h2>
+<div id="todayList">Belum ada absensi.</div>
 </div>
-
-
-<div>
-
-NAMA:
-
-<span id="nameStatus"
-      class="yellow">
-
--
-
-</span>
-
-</div>
-
-
-<div>
-
-KATEGORI:
-
-<span id="typeStatus"
-      class="yellow">
-
--
-
-</span>
-
-</div>
-
-
-<div>
-
-JARAK:
-
-<span id="scoreStatus"
-      class="yellow">
-
--
-
-</span>
-
-</div>
-
-
-<div>
-
-DATABASE:
-
-<span id="dbStatus"
-      class="green">
-
-0 orang
-
-</span>
-
-</div>
-
-</div>
-
-
-<!-- ============================================================
-     DATABASE
-============================================================ -->
 
 <div class="database">
-
-<h2>
-👥 DATABASE WAJAH
-</h2>
-
-<div id="peopleList">
-
-Belum ada data.
-
-</div>
-
-
+<h2>👥 DATABASE WAJAH</h2>
+<div id="peopleList">Belum ada data.</div>
 <div class="buttons">
-
-<button onclick="exportDatabase()">
-
-⬇ EXPORT DATABASE
-
-</button>
-
-
-<button onclick="document.getElementById('importFile').click()">
-
-⬆ IMPORT DATABASE
-
-</button>
-
-<input
-    type="file"
-    id="importFile"
-    accept=".json"
-    style="display:none"
-    onchange="importDatabase(event)"
->
-
+<button onclick="exportDatabase()">⬇ EXPORT DATABASE</button>
+<button onclick="document.getElementById('importFile').click()">⬆ IMPORT DATABASE</button>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="importDatabase(event)">
+<button onclick="openSettings()" class="btn-orange">⚙ GOOGLE SHEETS</button>
+</div>
+</div>
 </div>
 
-</div>
-
-
-</div>
-
-
-<!-- ============================================================
-     REGISTER MODAL
-============================================================ -->
-
-<div id="registerModal"
-     class="modal">
-
-
+<!-- REGISTER -->
+<div id="registerModal" class="modal">
 <div class="modal-content">
-
-
-<h2>
-➕ Daftar Wajah Baru
-</h2>
-
-
-<label>
-Nama Lengkap
-</label>
-
-<input
-    id="personName"
-    type="text"
-    placeholder="Contoh: Budi Santoso"
->
-
-
-<label>
-Kategori
-</label>
-
+<h2>➕ Daftar Wajah Baru</h2>
+<label>Nama Lengkap</label>
+<input id="personName" type="text" placeholder="Contoh: Budi Santoso">
+<label>Kategori</label>
 <select id="personType">
-
-<option value="SISWA">
-👨‍🎓 Siswa
-</option>
-
-<option value="GURU">
-👨‍🏫 Guru
-</option>
-
-<option value="STAFF">
-👩‍💼 Staff / Tendik
-</option>
-
+<option value="SISWA">👨‍🎓 Siswa</option>
+<option value="GURU">👨‍🏫 Guru</option>
+<option value="STAFF">👩‍💼 Staff / Tendik</option>
 </select>
-
-
-<label>
-Nomor Identitas
-</label>
-
-<input
-    id="personId"
-    type="text"
-    placeholder="NISN / NIP / NIK / ID"
->
-
-
-<div class="sample-status"
-     id="sampleStatus">
-
-Belum mengambil sampel wajah.
-
-</div>
-
-
+<label>Nomor Identitas</label>
+<input id="personId" type="text" placeholder="NISN / NIP / ID">
+<div class="sample-status" id="sampleStatus">Belum mengambil sampel wajah.</div>
 <div class="buttons">
-
-<button
-    onclick="captureFace()"
-    class="btn-green">
-
-📸 AMBIL SAMPEL WAJAH
-
-</button>
-
-
-<button
-    onclick="savePerson()"
-    class="btn-green">
-
-💾 SIMPAN
-
-</button>
-
-
-<button
-    onclick="closeRegister()"
-    class="btn-gray">
-
-BATAL
-
-</button>
-
+<button onclick="captureFace()" class="btn-green">📸 AMBIL SAMPEL</button>
+<button onclick="savePerson()" class="btn-green">💾 SIMPAN</button>
+<button onclick="closeRegister()" class="btn-gray">BATAL</button>
+</div>
+</div>
 </div>
 
-
+<!-- SETTINGS -->
+<div id="settingsModal" class="modal">
+<div class="modal-content">
+<h2>⚙ Google Sheets</h2>
+<p class="small">Masukkan URL Web App Google Apps Script. URL ini digunakan oleh GitHub Pages untuk mengirim data absensi.</p>
+<label>URL Web App Apps Script</label>
+<input id="scriptUrl" type="url" placeholder="https://script.google.com/macros/s/...../exec">
+<div class="buttons">
+<button onclick="saveSettings()" class="btn-green">💾 SIMPAN URL</button>
+<button onclick="testGoogleSheets()" class="btn-orange">🧪 TEST KONEKSI</button>
+<button onclick="closeSettings()" class="btn-gray">BATAL</button>
 </div>
-
+<div id="settingsStatus" class="sample-status">Belum diuji.</div>
 </div>
-
+</div>
 
 <script>
+const MODEL_URL="./models";
+const STORAGE_KEY="face_absensi_database_v2";
+const ATTENDANCE_KEY="face_absensi_attendance_v1";
+const SCRIPT_URL_KEY="face_absensi_google_script_url";
 
+const video=document.getElementById("video");
+const canvas=document.getElementById("overlay");
+const statusBox=document.getElementById("status");
+const modelStatus=document.getElementById("modelStatus");
+const faceStatus=document.getElementById("faceStatus");
+const nameStatus=document.getElementById("nameStatus");
+const typeStatus=document.getElementById("typeStatus");
+const scoreStatus=document.getElementById("scoreStatus");
+const attendanceStatus=document.getElementById("attendanceStatus");
+const startButton=document.getElementById("startButton");
+const dbStatus=document.getElementById("dbStatus");
+const sheetStatus=document.getElementById("sheetStatus");
 
-// ============================================================
-// CONFIG
-// ============================================================
+let people=[];
+let faceMatcher=null;
+let cameraStream=null;
+let detecting=false;
+let capturedDescriptor=null;
+let lastRecognition={id:null,time:0};
 
-const MODEL_URL = "./models";
-
-const STORAGE_KEY =
-    "face_absensi_database_v1";
-
-
-// ============================================================
-// ELEMENT
-// ============================================================
-
-const video =
-    document.getElementById("video");
-
-const canvas =
-    document.getElementById("overlay");
-
-const statusBox =
-    document.getElementById("status");
-
-const modelStatus =
-    document.getElementById("modelStatus");
-
-const faceStatus =
-    document.getElementById("faceStatus");
-
-const nameStatus =
-    document.getElementById("nameStatus");
-
-const typeStatus =
-    document.getElementById("typeStatus");
-
-const scoreStatus =
-    document.getElementById("scoreStatus");
-
-const startButton =
-    document.getElementById("startButton");
-
-const dbStatus =
-    document.getElementById("dbStatus");
-
-
-// ============================================================
-// DATABASE
-// ============================================================
-
-let people = [];
-
-let faceMatcher = null;
-
-
-// ============================================================
-// CAMERA
-// ============================================================
-
-let cameraStream = null;
-
-let detecting = false;
-
-
-// ============================================================
-// REGISTER SAMPLE
-// ============================================================
-
-let capturedDescriptor = null;
-
-
-// ============================================================
-// LOAD DATABASE
-// ============================================================
-
-function loadDatabase()
-{
-
-    try
-    {
-
-        const saved =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
-
-        if (!saved)
-        {
-
-            people = [];
-
-            return;
-
-        }
-
-        people =
-            JSON.parse(saved);
-
-        rebuildFaceMatcher();
-
-        updateDatabaseUI();
-
-    }
-
-    catch(error)
-    {
-
-        console.error(
-            "Database error:",
-            error);
-
-        people = [];
-
-    }
-
+function setStatus(text,type=""){
+ statusBox.className="status "+type;
+ statusBox.innerText=text;
 }
 
-
-// ============================================================
-// SAVE DATABASE
-// ============================================================
-
-function saveDatabase()
-{
-
-    localStorage.setItem(
-
-        STORAGE_KEY,
-
-        JSON.stringify(people)
-
-    );
-
+function loadDatabase(){
+ try{
+  const saved=localStorage.getItem(STORAGE_KEY);
+  people=saved?JSON.parse(saved):[];
+  if(!Array.isArray(people)) people=[];
+  rebuildFaceMatcher();
+  updateDatabaseUI();
+ }catch(e){console.error(e);people=[]}
 }
 
+function saveDatabase(){localStorage.setItem(STORAGE_KEY,JSON.stringify(people))}
 
-// ============================================================
-// REBUILD FACE MATCHER
-// ============================================================
-
-function rebuildFaceMatcher()
-{
-
-    if (people.length === 0)
-    {
-
-        faceMatcher = null;
-
-        return;
-
-    }
-
-
-    const descriptors =
-        [];
-
-
-    people.forEach(
-        person =>
-        {
-
-            person.descriptors.forEach(
-                descriptor =>
-                {
-
-                    descriptors.push(
-
-                        new faceapi.LabeledFaceDescriptors(
-
-                            person.id,
-
-                            [
-
-                                new Float32Array(
-                                    descriptor
-                                )
-
-                            ]
-
-                        )
-
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-    /*
-    FaceMatcher dapat menerima beberapa
-    descriptor untuk satu orang.
-    */
-
-    faceMatcher =
-        new faceapi.FaceMatcher(
-
-            descriptors,
-
-            0.52
-
-        );
-
+function rebuildFaceMatcher(){
+ if(!people.length){faceMatcher=null;return}
+ const descriptors=[];
+ people.forEach(p=>{
+  (p.descriptors||[]).forEach(d=>{
+   descriptors.push(new faceapi.LabeledFaceDescriptors(p.id,[new Float32Array(d)]));
+  });
+ });
+ faceMatcher=descriptors.length?new faceapi.FaceMatcher(descriptors,0.52):null;
 }
 
-
-// ============================================================
-// DATABASE UI
-// ============================================================
-
-function updateDatabaseUI()
-{
-
-    dbStatus.innerText =
-        people.length +
-        " orang";
-
-
-    const list =
-        document.getElementById(
-            "peopleList"
-        );
-
-
-    if (people.length === 0)
-    {
-
-        list.innerHTML =
-            "Belum ada data.";
-
-        return;
-
-    }
-
-
-    list.innerHTML = "";
-
-
-    people.forEach(
-        person =>
-        {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-            div.className =
-                "person";
-
-
-            div.innerHTML = `
-
-                <div class="person-info">
-
-                    <div class="person-name">
-
-                        ${escapeHTML(person.name)}
-
-                    </div>
-
-                    <div class="person-type">
-
-                        ${getTypeIcon(person.type)}
-
-                        ${escapeHTML(person.type)}
-
-                        • ${escapeHTML(person.identity)}
-
-                        • ${person.descriptors.length} sampel
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="delete"
-                    onclick="deletePerson('${person.id}')">
-
-                    🗑 HAPUS
-
-                </button>
-
-            `;
-
-
-            list.appendChild(div);
-
-        }
-    );
-
+function updateDatabaseUI(){
+ dbStatus.innerText=people.length+" orang";
+ const list=document.getElementById("peopleList");
+ if(!people.length){list.innerHTML="Belum ada data.";return}
+ list.innerHTML="";
+ people.forEach(p=>{
+  const div=document.createElement("div");
+  div.className="person";
+  div.innerHTML='<div class="person-info"><div class="person-name">'+escapeHTML(p.name)+'</div><div class="person-type">'+getTypeIcon(p.type)+' '+escapeHTML(p.type)+' • '+escapeHTML(p.identity)+' • '+p.descriptors.length+' sampel</div></div><button class="delete" onclick="deletePerson(\''+p.id+'\')">🗑 HAPUS</button>';
+  list.appendChild(div);
+ });
 }
 
+function escapeHTML(text){
+ const div=document.createElement("div");div.textContent=text??"";return div.innerHTML;
+}
+function getTypeIcon(type){return type==="GURU"?"👨‍🏫":type==="STAFF"?"👩‍💼":"👨‍🎓"}
 
-// ============================================================
-// ESCAPE HTML
-// ============================================================
-
-function escapeHTML(text)
-{
-
-    const div =
-        document.createElement("div");
-
-    div.textContent =
-        text;
-
-    return div.innerHTML;
-
+async function loadModels(){
+ try{
+  setStatus("⏳ Memuat Tiny Face Detector...","loading");
+  await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+  setStatus("⏳ Memuat Face Landmark 68...","loading");
+  await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+  setStatus("⏳ Memuat Face Recognition...","loading");
+  await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+  modelStatus.innerText="SEMUA MODEL OK";modelStatus.className="green";
+  setStatus("✅ MODEL AI SIAP","ready");
+  startButton.disabled=false;
+  loadDatabase();loadSheetSettings();renderTodayAttendance();
+ }catch(error){
+  console.error(error);setStatus("❌ GAGAL MEMUAT MODEL","error");
+  modelStatus.innerText=error.message;modelStatus.className="red";
+ }
 }
 
-
-// ============================================================
-// TYPE ICON
-// ============================================================
-
-function getTypeIcon(type)
-{
-
-    if (type === "GURU")
-        return "👨‍🏫";
-
-    if (type === "STAFF")
-        return "👩‍💼";
-
-    return "👨‍🎓";
-
+async function startCamera(){
+ try{
+  if(cameraStream)return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error("Browser tidak mendukung kamera.");
+  setStatus("⏳ Meminta akses kamera...","loading");
+  cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:640},height:{ideal:480}},audio:false});
+  video.srcObject=cameraStream;await video.play();
+  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+  setStatus("📷 KAMERA AKTIF","ready");startButton.disabled=true;detecting=true;detectLoop();
+ }catch(error){
+  console.error("Camera error:",error);setStatus("❌ GAGAL MEMBUKA KAMERA","error");
+  faceStatus.innerText=error.name+": "+error.message;faceStatus.className="red";
+ }
 }
 
-
-// ============================================================
-// LOAD MODELS
-// ============================================================
-
-async function loadModels()
-{
-
-    try
-    {
-
-        statusBox.className =
-            "status loading";
-
-        statusBox.innerText =
-            "⏳ Memuat Tiny Face Detector...";
-
-
-        await faceapi.nets.tinyFaceDetector
-            .loadFromUri(MODEL_URL);
-
-
-        statusBox.innerText =
-            "⏳ Memuat Face Landmark 68...";
-
-
-        await faceapi.nets.faceLandmark68Net
-            .loadFromUri(MODEL_URL);
-
-
-        statusBox.innerText =
-            "⏳ Memuat Face Recognition...";
-
-
-        await faceapi.nets.faceRecognitionNet
-            .loadFromUri(MODEL_URL);
-
-
-        modelStatus.innerText =
-            "SEMUA MODEL OK";
-
-        modelStatus.className =
-            "green";
-
-
-        statusBox.className =
-            "status ready";
-
-        statusBox.innerText =
-            "✅ MODEL AI SIAP";
-
-
-        startButton.disabled =
-            false;
-
-
-        loadDatabase();
-
-
-        console.log(
-            "Face API ready"
-        );
-
-    }
-
-    catch(error)
-    {
-
-        console.error(
-            error
-        );
-
-
-        statusBox.className =
-            "status error";
-
-
-        statusBox.innerText =
-            "❌ GAGAL MEMUAT MODEL";
-
-
-        modelStatus.innerText =
-            error.message;
-
-
-        modelStatus.className =
-            "red";
-
-    }
-
+function stopCamera(){
+ detecting=false;
+ if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}
+ video.srcObject=null;
+ const ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);
+ startButton.disabled=false;setStatus("⏹ KAMERA BERHENTI");
 }
 
-
-// ============================================================
-// START CAMERA
-// ============================================================
-
-async function startCamera()
-{
-
-    try
-    {
-
-        if (cameraStream)
-            return;
-
-
-        statusBox.className =
-            "status loading";
-
-        statusBox.innerText =
-            "⏳ Meminta akses kamera...";
-
-
-        cameraStream =
-            await navigator.mediaDevices
-                .getUserMedia({
-
-                    video: {
-
-                        facingMode: "user",
-
-                        width: {
-                            ideal: 640
-                        },
-
-                        height: {
-                            ideal: 480
-                        }
-
-                    },
-
-                    audio: false
-
-                });
-
-
-        video.srcObject =
-            cameraStream;
-
-
-        await video.play();
-
-
-        canvas.width =
-            video.videoWidth;
-
-        canvas.height =
-            video.videoHeight;
-
-
-        statusBox.className =
-            "status ready";
-
-        statusBox.innerText =
-            "📷 KAMERA AKTIF";
-
-
-        startButton.disabled =
-            true;
-
-
-        detecting =
-            true;
-
-
-        detectLoop();
-
-    }
-
-    catch(error)
-    {
-
-        console.error(
-            "Camera error:",
-            error
-        );
-
-
-        statusBox.className =
-            "status error";
-
-
-        statusBox.innerText =
-            "❌ GAGAL MEMBUKA KAMERA";
-
-
-        faceStatus.innerText =
-            error.name;
-
-        faceStatus.className =
-            "red";
-
-    }
-
+async function detectLoop(){
+ if(!detecting)return;
+ if(!video.videoWidth){requestAnimationFrame(detectLoop);return}
+ try{
+  const detections=await faceapi.detectAllFaces(video,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptors();
+  drawResults(detections);
+ }catch(e){console.error("Detection error:",e)}
+ setTimeout(detectLoop,150);
 }
 
+function drawResults(detections){
+ const ctx=canvas.getContext("2d");
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ const displaySize={width:video.videoWidth,height:video.videoHeight};
+ faceapi.matchDimensions(canvas,displaySize);
+ const resized=faceapi.resizeResults(detections,displaySize);
 
-// ============================================================
-// STOP CAMERA
-// ============================================================
+ if(!resized.length){
+  faceStatus.innerText="TIDAK ADA WAJAH";faceStatus.className="yellow";
+  nameStatus.innerText="-";typeStatus.innerText="-";scoreStatus.innerText="-";attendanceStatus.innerText="-";return;
+ }
+ faceStatus.innerText=resized.length+" WAJAH TERDETEKSI";faceStatus.className="green";
 
-function stopCamera()
-{
-
-    detecting = false;
-
-
-    if (cameraStream)
-    {
-
-        cameraStream
-            .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
-
-        cameraStream = null;
-
-    }
-
-
-    video.srcObject = null;
-
-
-    const ctx =
-        canvas.getContext("2d");
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    startButton.disabled =
-        false;
-
-
-    statusBox.className =
-        "status";
-
-    statusBox.innerText =
-        "⏹ KAMERA BERHENTI";
-
+ resized.forEach(result=>{
+  const o=result.detection.box;
+  const box={x:canvas.width-o.x-o.width,y:o.y,width:o.width,height:o.height};
+  ctx.strokeStyle="#00ff55";ctx.lineWidth=3;ctx.strokeRect(box.x,box.y,box.width,box.height);
+  ctx.fillStyle="#00ff55";ctx.font="bold 16px Arial";
+  ctx.fillText("FACE "+(result.detection.score*100).toFixed(1)+"%",box.x,Math.max(20,box.y-7));
+  recognizeFace(result,box);
+ });
 }
 
-
-// ============================================================
-// DETECTION LOOP
-// ============================================================
-
-async function detectLoop()
-{
-
-    if (!detecting)
-        return;
-
-
-    if (!video.videoWidth)
-    {
-
-        requestAnimationFrame(
-            detectLoop
-        );
-
-        return;
-
-    }
-
-
-    try
-    {
-
-        const detections =
-            await faceapi
-                .detectAllFaces(
-
-                    video,
-
-                    new faceapi
-                        .TinyFaceDetectorOptions({
-
-                            inputSize: 320,
-
-                            scoreThreshold: 0.5
-
-                        })
-
-                )
-                .withFaceLandmarks()
-                .withFaceDescriptors();
-
-
-        drawResults(
-            detections
-        );
-
-    }
-
-    catch(error)
-    {
-
-        console.error(
-            "Detection error:",
-            error
-        );
-
-    }
-
-
-    setTimeout(
-        detectLoop,
-        120
-    );
-
+function recognizeFace(result,box){
+ if(!faceMatcher){
+  drawUnknown(box);nameStatus.innerText="UNKNOWN";typeStatus.innerText="-";scoreStatus.innerText="-";attendanceStatus.innerText="-";return;
+ }
+ try{
+  const best=faceMatcher.findBestMatch(result.descriptor);
+  const person=people.find(p=>p.id===best.label);
+  scoreStatus.innerText=best.distance.toFixed(3);
+  if(best.label!=="unknown"&&person){
+   nameStatus.innerText=person.name;typeStatus.innerText=person.type;
+   drawKnown(box,person.name,person.type);
+   maybeAttendance(person);
+  }else{
+   nameStatus.innerText="UNKNOWN";typeStatus.innerText="-";attendanceStatus.innerText="BELUM DIKENAL";drawUnknown(box);
+  }
+ }catch(e){console.error("Recognition error:",e)}
 }
 
-
-// ============================================================
-// DRAW RESULTS
-// ============================================================
-
-function drawResults(
-    detections
-)
-{
-
-    const ctx =
-        canvas.getContext("2d");
-
-
-    ctx.clearRect(
-
-        0,
-        0,
-        canvas.width,
-        canvas.height
-
-    );
-
-
-    const displaySize = {
-
-        width:
-            video.videoWidth,
-
-        height:
-            video.videoHeight
-
-    };
-
-
-    faceapi.matchDimensions(
-
-        canvas,
-
-        displaySize
-
-    );
-
-
-    let resized =
-        faceapi.resizeResults(
-
-            detections,
-
-            displaySize
-
-        );
-
-
-    // ========================================================
-    // IMPORTANT
-    // ========================================================
-    //
-    // Video mirror.
-    //
-    // Canvas tidak mirror.
-    //
-    // Jadi koordinat wajah harus dibalik
-    // agar kotak mengikuti gambar mirror.
-    //
-
-
-    if (resized.length === 0)
-    {
-
-        faceStatus.innerText =
-            "TIDAK ADA WAJAH";
-
-        faceStatus.className =
-            "yellow";
-
-        nameStatus.innerText =
-            "-";
-
-        typeStatus.innerText =
-            "-";
-
-        scoreStatus.innerText =
-            "-";
-
-        return;
-
-    }
-
-
-    faceStatus.innerText =
-        resized.length +
-        " WAJAH TERDETEKSI";
-
-    faceStatus.className =
-        "green";
-
-
-    resized.forEach(
-        (result) =>
-        {
-
-            const originalBox =
-                result.detection.box;
-
-
-            const box = {
-
-                x:
-                    canvas.width -
-                    originalBox.x -
-                    originalBox.width,
-
-                y:
-                    originalBox.y,
-
-                width:
-                    originalBox.width,
-
-                height:
-                    originalBox.height
-
-            };
-
-
-            const detectionScore =
-                result.detection.score;
-
-
-            // =================================================
-            // DRAW BOX
-            // =================================================
-
-            ctx.strokeStyle =
-                "#00ff55";
-
-            ctx.lineWidth =
-                3;
-
-
-            ctx.strokeRect(
-
-                box.x,
-
-                box.y,
-
-                box.width,
-
-                box.height
-
-            );
-
-
-            // =================================================
-            // DETECTION SCORE
-            // =================================================
-
-            ctx.fillStyle =
-                "#00ff55";
-
-            ctx.font =
-                "bold 17px Arial";
-
-
-            ctx.fillText(
-
-                "FACE " +
-                (detectionScore * 100)
-                    .toFixed(1) +
-                "%",
-
-                box.x,
-
-                Math.max(
-                    20,
-                    box.y - 8
-                )
-
-            );
-
-
-            // =================================================
-            // RECOGNITION
-            // =================================================
-
-            recognizeFace(
-
-                result,
-
-                box
-
-            );
-
-        }
-    );
-
+function drawKnown(box,name,type){
+ const ctx=canvas.getContext("2d");ctx.strokeStyle="#00ff55";ctx.lineWidth=4;ctx.strokeRect(box.x,box.y,box.width,box.height);
+ const label="✓ "+name+" ["+type+"]";ctx.font="bold 18px Arial";const width=ctx.measureText(label).width;const y=box.y+box.height+5;
+ ctx.fillStyle="rgba(0,255,80,.85)";ctx.fillRect(box.x,y,width+12,28);ctx.fillStyle="#000";ctx.fillText(label,box.x+6,y+20);
+}
+function drawUnknown(box){
+ const ctx=canvas.getContext("2d");ctx.strokeStyle="#ff4444";ctx.lineWidth=4;ctx.strokeRect(box.x,box.y,box.width,box.height);
+ const label="UNKNOWN";ctx.font="bold 18px Arial";const width=ctx.measureText(label).width;const y=box.y+box.height+5;
+ ctx.fillStyle="rgba(255,60,60,.85)";ctx.fillRect(box.x,y,width+12,28);ctx.fillStyle="#fff";ctx.fillText(label,box.x+6,y+20);
 }
 
+function openRegister(){
+ if(!cameraStream){alert("Nyalakan kamera terlebih dahulu.");return}
+ capturedDescriptor=null;
+ document.getElementById("personName").value="";
+ document.getElementById("personId").value="";
+ document.getElementById("personType").value="SISWA";
+ document.getElementById("sampleStatus").innerText="Belum mengambil sampel wajah.";
+ document.getElementById("registerModal").style.display="block";
+}
+function closeRegister(){document.getElementById("registerModal").style.display="none"}
 
-// ============================================================
-// RECOGNITION
-// ============================================================
-
-function recognizeFace(
-    result,
-    box
-)
-{
-
-    if (!faceMatcher)
-    {
-
-        drawUnknown(
-            box
-        );
-
-        nameStatus.innerText =
-            "UNKNOWN";
-
-        typeStatus.innerText =
-            "-";
-
-        scoreStatus.innerText =
-            "-";
-
-        return;
-
-    }
-
-
-    try
-    {
-
-        const bestMatch =
-            faceMatcher.findBestMatch(
-
-                result.descriptor
-
-            );
-
-
-        const person =
-            people.find(
-                p =>
-                    p.id ===
-                    bestMatch.label
-            );
-
-
-        const distance =
-            bestMatch.distance;
-
-
-        scoreStatus.innerText =
-            distance.toFixed(3);
-
-
-        // ====================================================
-        // KNOWN
-        // ====================================================
-
-        if (
-            bestMatch.label !== "unknown"
-            &&
-            person
-        )
-        {
-
-            nameStatus.innerText =
-                person.name;
-
-            typeStatus.innerText =
-                person.type;
-
-
-            drawKnown(
-
-                box,
-
-                person.name,
-
-                person.type
-
-            );
-
-        }
-
-        // ====================================================
-        // UNKNOWN
-        // ====================================================
-
-        else
-        {
-
-            nameStatus.innerText =
-                "UNKNOWN";
-
-            typeStatus.innerText =
-                "-";
-
-
-            drawUnknown(
-                box
-            );
-
-        }
-
-    }
-
-    catch(error)
-    {
-
-        console.error(
-            "Recognition error:",
-            error
-        );
-
-    }
-
+async function captureFace(){
+ const s=document.getElementById("sampleStatus");s.innerText="⏳ Mendeteksi wajah...";
+ try{
+  const detection=await faceapi.detectSingleFace(video,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();
+  if(!detection){s.innerText="❌ Wajah tidak ditemukan.";return}
+  capturedDescriptor=Array.from(detection.descriptor);s.innerText="✅ Sampel wajah berhasil diambil.";
+ }catch(e){console.error(e);s.innerText="❌ Gagal mengambil sampel."}
 }
 
-
-// ============================================================
-// DRAW KNOWN
-// ============================================================
-
-function drawKnown(
-    box,
-    name,
-    type
-)
-{
-
-    const ctx =
-        canvas.getContext("2d");
-
-
-    ctx.strokeStyle =
-        "#00ff55";
-
-    ctx.lineWidth =
-        4;
-
-
-    ctx.strokeRect(
-
-        box.x,
-
-        box.y,
-
-        box.width,
-
-        box.height
-
-    );
-
-
-    const label =
-        "✓ " +
-        name +
-        " [" +
-        type +
-        "]";
-
-
-    ctx.font =
-        "bold 18px Arial";
-
-
-    const width =
-        ctx.measureText(
-            label
-        ).width;
-
-
-    const y =
-        box.y +
-        box.height +
-        5;
-
-
-    ctx.fillStyle =
-        "rgba(0,255,80,0.85)";
-
-
-    ctx.fillRect(
-
-        box.x,
-
-        y,
-
-        width + 12,
-
-        28
-
-    );
-
-
-    ctx.fillStyle =
-        "#000";
-
-
-    ctx.fillText(
-
-        label,
-
-        box.x + 6,
-
-        y + 20
-
-    );
-
+function savePerson(){
+ const name=document.getElementById("personName").value.trim();
+ const type=document.getElementById("personType").value;
+ const identity=document.getElementById("personId").value.trim();
+ if(!name)return alert("Nama harus diisi.");
+ if(!identity)return alert("Nomor identitas harus diisi.");
+ if(!capturedDescriptor)return alert("Ambil sampel wajah terlebih dahulu.");
+ const person={id:"person_"+Date.now()+"_"+Math.random().toString(36).substring(2),name,type,identity,descriptors:[capturedDescriptor],created:new Date().toISOString()};
+ people.push(person);saveDatabase();rebuildFaceMatcher();updateDatabaseUI();closeRegister();
+ alert("Data "+name+" berhasil disimpan.");
 }
 
-
-// ============================================================
-// DRAW UNKNOWN
-// ============================================================
-
-function drawUnknown(
-    box
-)
-{
-
-    const ctx =
-        canvas.getContext("2d");
-
-
-    ctx.strokeStyle =
-        "#ff4444";
-
-    ctx.lineWidth =
-        4;
-
-
-    ctx.strokeRect(
-
-        box.x,
-
-        box.y,
-
-        box.width,
-
-        box.height
-
-    );
-
-
-    const label =
-        "UNKNOWN";
-
-
-    ctx.font =
-        "bold 18px Arial";
-
-
-    const width =
-        ctx.measureText(
-            label
-        ).width;
-
-
-    const y =
-        box.y +
-        box.height +
-        5;
-
-
-    ctx.fillStyle =
-        "rgba(255,60,60,0.85)";
-
-
-    ctx.fillRect(
-
-        box.x,
-
-        y,
-
-        width + 12,
-
-        28
-
-    );
-
-
-    ctx.fillStyle =
-        "#fff";
-
-
-    ctx.fillText(
-
-        label,
-
-        box.x + 6,
-
-        y + 20
-
-    );
-
+function deletePerson(id){
+ const p=people.find(x=>x.id===id);if(!p)return;
+ if(!confirm("Hapus data "+p.name+"?"))return;
+ people=people.filter(x=>x.id!==id);saveDatabase();rebuildFaceMatcher();updateDatabaseUI();
 }
 
-
-// ============================================================
-// REGISTER MODAL
-// ============================================================
-
-function openRegister()
-{
-
-    if (!cameraStream)
-    {
-
-        alert(
-            "Nyalakan kamera terlebih dahulu."
-        );
-
-        return;
-
-    }
-
-
-    capturedDescriptor =
-        null;
-
-
-    document.getElementById(
-        "personName"
-    ).value = "";
-
-
-    document.getElementById(
-        "personId"
-    ).value = "";
-
-
-    document.getElementById(
-        "personType"
-    ).value =
-        "SISWA";
-
-
-    document.getElementById(
-        "sampleStatus"
-    ).innerText =
-        "Belum mengambil sampel wajah.";
-
-
-    document.getElementById(
-        "registerModal"
-    ).style.display =
-        "block";
-
+function exportDatabase(){
+ if(!people.length)return alert("Database masih kosong.");
+ const blob=new Blob([JSON.stringify(people,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="database-wajah.json";a.click();
 }
 
-
-// ============================================================
-// CLOSE REGISTER
-// ============================================================
-
-function closeRegister()
-{
-
-    document.getElementById(
-        "registerModal"
-    ).style.display =
-        "none";
-
+function importDatabase(event){
+ const file=event.target.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{try{
+  const data=JSON.parse(reader.result);
+  if(!Array.isArray(data))throw new Error("Format tidak valid");
+  people=data;saveDatabase();rebuildFaceMatcher();updateDatabaseUI();alert("Database berhasil diimport.");
+ }catch(e){alert("Gagal import: "+e.message)}};
+ reader.readAsText(file);event.target.value="";
 }
 
-
-// ============================================================
-// CAPTURE FACE
-// ============================================================
-
-async function captureFace()
-{
-
-    const sampleStatus =
-        document.getElementById(
-            "sampleStatus"
-        );
-
-
-    sampleStatus.innerText =
-        "⏳ Mendeteksi wajah...";
-
-
-    try
-    {
-
-        const detection =
-            await faceapi
-                .detectSingleFace(
-
-                    video,
-
-                    new faceapi
-                        .TinyFaceDetectorOptions({
-
-                            inputSize: 320,
-
-                            scoreThreshold: 0.5
-
-                        })
-
-                )
-                .withFaceLandmarks()
-                .withFaceDescriptor();
-
-
-        if (!detection)
-        {
-
-            sampleStatus.innerText =
-                "❌ Wajah tidak ditemukan. Hadapkan wajah ke kamera.";
-
-            return;
-
-        }
-
-
-        capturedDescriptor =
-            Array.from(
-                detection.descriptor
-            );
-
-
-        sampleStatus.innerText =
-            "✅ Sampel wajah berhasil diambil.";
-
-    }
-
-    catch(error)
-    {
-
-        console.error(
-            error
-        );
-
-
-        sampleStatus.innerText =
-            "❌ Gagal mengambil sampel.";
-
-    }
-
+/* ================= ABSENSI ================= */
+function dateKey(){
+ const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function timeText(){
+ return new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+}
+function loadAttendance(){
+ try{const x=JSON.parse(localStorage.getItem(ATTENDANCE_KEY)||"[]");return Array.isArray(x)?x:[]}catch(e){return[]}
+}
+function saveAttendance(x){localStorage.setItem(ATTENDANCE_KEY,JSON.stringify(x))}
+function alreadyAttended(id){
+ return loadAttendance().some(a=>a.date===dateKey()&&a.personId===id);
 }
 
-
-// ============================================================
-// SAVE PERSON
-// ============================================================
-
-function savePerson()
-{
-
-    const name =
-        document.getElementById(
-            "personName"
-        ).value.trim();
-
-
-    const type =
-        document.getElementById(
-            "personType"
-        ).value;
-
-
-    const identity =
-        document.getElementById(
-            "personId"
-        ).value.trim();
-
-
-    if (!name)
-    {
-
-        alert(
-            "Nama harus diisi."
-        );
-
-        return;
-
-    }
-
-
-    if (!identity)
-    {
-
-        alert(
-            "Nomor identitas harus diisi."
-        );
-
-        return;
-
-    }
-
-
-    if (!capturedDescriptor)
-    {
-
-        alert(
-            "Ambil sampel wajah terlebih dahulu."
-        );
-
-        return;
-
-    }
-
-
-    const person = {
-
-        id:
-            "person_" +
-            Date.now() +
-            "_" +
-            Math.random()
-                .toString(36)
-                .substring(2),
-
-        name:
-            name,
-
-        type:
-            type,
-
-        identity:
-            identity,
-
-        descriptors:
-            [
-                capturedDescriptor
-            ],
-
-        created:
-            new Date().toISOString()
-
-    };
-
-
-    people.push(
-        person
-    );
-
-
-    saveDatabase();
-
-    rebuildFaceMatcher();
-
-    updateDatabaseUI();
-
-
-    alert(
-        "Data " +
-        name +
-        " berhasil disimpan."
-    );
-
-
-    closeRegister();
-
+function maybeAttendance(person){
+ if(lastRecognition.id===person.id&&Date.now()-lastRecognition.time<5000)return;
+ lastRecognition={id:person.id,time:Date.now()};
+ if(alreadyAttended(person.id)){
+  attendanceStatus.innerText="SUDAH ABSEN HARI INI";
+  attendanceStatus.className="yellow";
+  return;
+ }
+ recordAttendance(person);
 }
 
-
-// ============================================================
-// DELETE PERSON
-// ============================================================
-
-function deletePerson(
-    id
-)
-{
-
-    const person =
-        people.find(
-            p =>
-                p.id === id
-        );
-
-
-    if (!person)
-        return;
-
-
-    if (
-        !confirm(
-            "Hapus data " +
-            person.name +
-            "?"
-        )
-    )
-        return;
-
-
-    people =
-        people.filter(
-            p =>
-                p.id !== id
-        );
-
-
-    saveDatabase();
-
-    rebuildFaceMatcher();
-
-    updateDatabaseUI();
-
+async function recordAttendance(person){
+ const item={
+  id:"abs_"+Date.now()+"_"+Math.random().toString(36).substring(2),
+  date:dateKey(),
+  time:timeText(),
+  timestamp:new Date().toISOString(),
+  personId:person.id,
+  name:person.name,
+  type:person.type,
+  identity:person.identity,
+  status:"HADIR"
+ };
+ const data=loadAttendance();data.push(item);saveAttendance(data);renderTodayAttendance();
+ attendanceStatus.innerText="✅ HADIR "+item.time;attendanceStatus.className="green";
+ await sendToGoogleSheets(item);
 }
 
-
-// ============================================================
-// EXPORT DATABASE
-// ============================================================
-
-function exportDatabase()
-{
-
-    if (people.length === 0)
-    {
-
-        alert(
-            "Database masih kosong."
-        );
-
-        return;
-
-    }
-
-
-    const data =
-        JSON.stringify(
-            people,
-            null,
-            2
-        );
-
-
-    const blob =
-        new Blob(
-
-            [data],
-
-            {
-                type:
-                    "application/json"
-            }
-
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const a =
-        document.createElement(
-            "a"
-        );
-
-
-    a.href =
-        url;
-
-
-    a.download =
-        "database-wajah.json";
-
-
-    a.click();
-
-
-    URL.revokeObjectURL(
-        url
-    );
-
+function renderTodayAttendance(){
+ const list=document.getElementById("todayList");
+ const data=loadAttendance().filter(x=>x.date===dateKey()).sort((a,b)=>a.time.localeCompare(b.time));
+ if(!data.length){list.innerHTML="Belum ada absensi.";return}
+ let html='<div class="table-wrap"><table><thead><tr><th>Jam</th><th>Nama</th><th>Kategori</th><th>ID</th><th>Status</th></tr></thead><tbody>';
+ data.forEach(x=>html+='<tr><td>'+escapeHTML(x.time)+'</td><td>'+escapeHTML(x.name)+'</td><td>'+escapeHTML(x.type)+'</td><td>'+escapeHTML(x.identity)+'</td><td>'+escapeHTML(x.status)+'</td></tr>');
+ html+='</tbody></table></div>';list.innerHTML=html;
 }
 
-
-// ============================================================
-// IMPORT DATABASE
-// ============================================================
-
-function importDatabase(
-    event
-)
-{
-
-    const file =
-        event.target.files[0];
-
-
-    if (!file)
-        return;
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-        function()
-        {
-
-            try
-            {
-
-                const imported =
-                    JSON.parse(
-                        reader.result
-                    );
-
-
-                if (!Array.isArray(
-                    imported
-                ))
-                {
-
-                    throw new Error(
-                        "Format database tidak valid."
-                    );
-
-                }
-
-
-                people =
-                    imported;
-
-
-                saveDatabase();
-
-                rebuildFaceMatcher();
-
-                updateDatabaseUI();
-
-
-                alert(
-                    "Database berhasil diimport."
-                );
-
-            }
-
-            catch(error)
-            {
-
-                alert(
-                    "Gagal import database: " +
-                    error.message
-                );
-
-            }
-
-        };
-
-
-    reader.readAsText(
-        file
-    );
-
+/* ================= GOOGLE SHEETS ================= */
+function loadSheetSettings(){
+ const url=localStorage.getItem(SCRIPT_URL_KEY)||"";
+ document.getElementById("scriptUrl").value=url;
+ if(url){sheetStatus.innerText="URL tersimpan";sheetStatus.className="green"}
+ else{sheetStatus.innerText="Belum dikonfigurasi";sheetStatus.className="yellow"}
 }
 
+function openSettings(){loadSheetSettings();document.getElementById("settingsStatus").innerText="Belum diuji.";document.getElementById("settingsModal").style.display="block"}
+function closeSettings(){document.getElementById("settingsModal").style.display="none"}
 
-// ============================================================
-// PAGE LOAD
-// ============================================================
+function saveSettings(){
+ const url=document.getElementById("scriptUrl").value.trim();
+ if(url&&!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(url)){
+  alert("URL harus berupa Web App Apps Script berakhiran /exec.");return;
+ }
+ localStorage.setItem(SCRIPT_URL_KEY,url);loadSheetSettings();
+ document.getElementById("settingsStatus").innerText=url?"✅ URL disimpan.":"URL dikosongkan.";
+}
 
-window.addEventListener(
+async function testGoogleSheets(){
+ const url=document.getElementById("scriptUrl").value.trim();
+ const s=document.getElementById("settingsStatus");
+ if(!url){s.innerText="❌ Isi URL Apps Script dahulu.";return}
+ s.innerText="⏳ Menguji koneksi...";
+ try{
+  const r=await fetch(url+"?action=ping",{method:"GET",mode:"cors",cache:"no-store"});
+  const text=await r.text();
+  s.innerText="✅ Terhubung: "+text;
+ }catch(e){
+  console.error(e);s.innerText="❌ Tidak dapat menghubungi Web App. Periksa deployment dan aksesnya.";
+ }
+}
 
-    "load",
+async function sendToGoogleSheets(item){
+ const url=localStorage.getItem(SCRIPT_URL_KEY)||"";
+ if(!url){sheetStatus.innerText="URL belum diatur";sheetStatus.className="yellow";return}
+ try{
+  sheetStatus.innerText="Mengirim...";sheetStatus.className="yellow";
+  const body=JSON.stringify({action:"attendance",data:item});
+  const r=await fetch(url,{method:"POST",mode:"cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
+  const text=await r.text();
+  if(!r.ok)throw new Error(text);
+  sheetStatus.innerText="✅ Terkirim";sheetStatus.className="green";
+ }catch(e){
+  console.error("Google Sheets:",e);
+  sheetStatus.innerText="❌ Gagal kirim";sheetStatus.className="red";
+ }
+}
 
-    loadModels
-
-);
-
-
-// ============================================================
-// CLOSE MODAL WHEN CLICK OUTSIDE
-// ============================================================
-
-window.addEventListener(
-
-    "click",
-
-    function(event)
-    {
-
-        const modal =
-            document.getElementById(
-                "registerModal"
-            );
-
-
-        if (
-            event.target === modal
-        )
-        {
-
-            closeRegister();
-
-        }
-
-    }
-
-);
-
+/* ================= PAGE ================= */
+window.addEventListener("load",loadModels);
+window.addEventListener("click",e=>{
+ const r=document.getElementById("registerModal"),s=document.getElementById("settingsModal");
+ if(e.target===r)closeRegister();if(e.target===s)closeSettings();
+});
 </script>
-
-
 </body>
-
 </html>
