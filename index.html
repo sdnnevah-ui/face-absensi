@@ -2937,115 +2937,158 @@ SAVE PERSON
 async function savePerson() {
 
     const name =
-        document.getElementById(
-            "personName"
-        ).value.trim();
-
+        document
+            .getElementById("personName")
+            .value
+            .trim();
 
     const type =
-        document.getElementById(
-            "personType"
-        ).value;
-
+        document
+            .getElementById("personType")
+            .value;
 
     const identity =
-        document.getElementById(
-            "personId"
-        ).value.trim();
+        document
+            .getElementById("personId")
+            .value
+            .trim();
 
+    const sampleStatus =
+        document.getElementById("sampleStatus");
+
+
+    // ==============================
+    // VALIDASI
+    // ==============================
 
     if (!name) {
-
-        alert(
-            "Nama harus diisi."
-        );
-
+        alert("Nama harus diisi.");
         return;
-
     }
-
 
     if (!identity) {
-
-        alert(
-            "Nomor identitas harus diisi."
-        );
-
+        alert("Nomor identitas harus diisi.");
         return;
-
     }
-
 
     if (
-        !capturedDescriptors.length
+        !capturedDescriptors ||
+        capturedDescriptors.length === 0
     ) {
-
-        alert(
-            "Ambil minimal satu sampel wajah."
-        );
-
+        alert("Ambil minimal 1 sampel wajah terlebih dahulu.");
         return;
-
     }
+
+
+    // ==============================
+    // BUAT ID
+    // ==============================
+
+    const person = {
+
+        id:
+            "person_" +
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .substring(2),
+
+        name:
+            name,
+
+        type:
+            type,
+
+        identity:
+            identity,
+
+        descriptors:
+            capturedDescriptors,
+
+        created:
+            new Date().toISOString()
+
+    };
+
+
+    // ==============================
+    // STATUS
+    // ==============================
+
+    sampleStatus.innerText =
+        "⏳ Menyimpan DATA_WAJAH...";
 
 
     try {
 
-        setStatus(
+        // ==========================
+        // KIRIM KE GOOGLE SHEETS
+        // ==========================
 
-            "⏳ Menyimpan wajah ke Google Sheets...",
+        const result =
+            await apiPost({
 
-            "loading"
+                action: "register",
 
-        );
+                data: {
+
+                    id:
+                        person.id,
+
+                    name:
+                        person.name,
+
+                    type:
+                        person.type,
+
+                    identity:
+                        person.identity,
+
+                    descriptors:
+                        person.descriptors
+
+                }
+
+            });
 
 
-        await apiPost({
+        if (!result.success) {
 
-            action:
-                "register",
+            throw new Error(
+                result.message ||
+                "API gagal menyimpan data."
+            );
 
-            data: {
+        }
 
-                /*
-                 * ID = identitas
-                 */
 
-                id:
-                    identity,
+        // ==========================
+        // BERHASIL
+        // ==========================
 
-                name:
-                    name,
+        sampleStatus.innerText =
+            "✅ Data berhasil disimpan ke DATA_WAJAH.";
 
-                type:
-                    type,
 
-                identity:
-                    identity,
+        // Masukkan ke database lokal
+        people.push(person);
 
-                descriptors:
-                    capturedDescriptors
+        saveLocalCache();
 
-            }
+        rebuildFaceMatcher();
 
-        });
+        updateDatabaseUI();
 
 
         alert(
-            "Data wajah berhasil disimpan."
+            "✅ Data " +
+            name +
+            " berhasil disimpan ke Google Sheets."
         );
 
 
         closeRegister();
-
-
-        await syncDatabase();
-
-
-        setStatus(
-            "✅ DATA WAJAH TERSINKRON",
-            "ready"
-        );
 
 
     }
@@ -3053,28 +3096,24 @@ async function savePerson() {
     catch (error) {
 
         console.error(
+            "REGISTER ERROR:",
             error
         );
 
 
+        sampleStatus.innerText =
+            "❌ Gagal menyimpan: " +
+            error.message;
+
+
         alert(
-
-            "Gagal menyimpan:\n" +
+            "❌ Gagal menyimpan data wajah.\n\n" +
             error.message
-
-        );
-
-
-        setStatus(
-            "❌ Gagal menyimpan DATA_WAJAH",
-            "error"
         );
 
     }
 
 }
-
-
 /* ============================================================
 DELETE
 ============================================================ */
