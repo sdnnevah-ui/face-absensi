@@ -1,110 +1,43 @@
-<!doctype html>
-<html lang="id">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADMIN FACE ABSENSI</title>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-<style>
-body{margin:0;padding:15px;background:#101010;color:#fff;font-family:Arial,sans-serif}.c{max-width:900px;margin:auto}.p{background:#202020;padding:16px;border-radius:9px;margin:14px 0}input,select{width:100%;padding:11px;margin:6px 0 12px;background:#111;color:#fff;border:1px solid #555;border-radius:6px;box-sizing:border-box}button{padding:11px 16px;margin:5px;border:0;border-radius:7px;background:#1976d2;color:#fff;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.green{background:#16833b}.red{background:#a22}.gray{background:#444}.status{padding:10px;background:#292929;border-radius:7px}.cam{max-width:600px;margin:auto;background:#000}.cam video{width:100%;display:block;transform:scaleX(-1)}.person{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#292929;margin:7px 0;border-radius:7px}.small{color:#aaa;font-size:12px}.hidden{display:none}.preview{max-width:180px;max-height:180px;display:block;margin:10px auto}
-</style>
-</head>
-<body>
-<div class="c">
-<h1>🔐 ADMIN FACE ABSENSI</h1>
-<div id="login" class="p">
-<h2>Login Admin</h2>
-<input id="pass" type="password" placeholder="Password admin">
-<button id="loginBtn" class="green">LOGIN</button>
-<div id="ls" class="status">Masukkan password admin.</div>
-</div>
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ADMIN FACE ABSENSI V4</title><script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script><style>
+body{margin:0;padding:15px;background:#0d1117;color:#fff;font-family:Arial,sans-serif}.c{max-width:1200px;margin:auto}.p{background:#161b22;padding:16px;border-radius:12px;margin:14px 0;border:1px solid #30363d}input,select{width:100%;padding:10px;margin:6px 0 12px;background:#0d1117;color:#fff;border:1px solid #444;border-radius:7px;box-sizing:border-box}button{padding:10px 15px;margin:4px;border:0;border-radius:7px;background:#1976d2;color:#fff;cursor:pointer}.green{background:#16833b}.red{background:#a22}.gray{background:#444}.orange{background:#b66a00}.hidden{display:none}.status{padding:10px;background:#21262d;border-radius:7px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.card{background:#21262d;padding:14px;border-radius:10px}.num{font-size:28px;font-weight:bold}.ok{color:#56d364}.danger{color:#ff7b72}.muted{color:#9da7b3;font-size:12px}.scroll{overflow:auto}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #30363d;text-align:left;white-space:nowrap}.cam{max-width:600px;margin:auto;background:#000}.cam video{width:100%;display:block;transform:scaleX(-1)}.preview{max-width:180px;max-height:180px;display:block;margin:10px auto}</style></head><body><div class="c"><h1>🔐 DASHBOARD ADMIN ABSENSI V4</h1>
+<div id="login" class="p"><h2>Login Admin</h2><input id="pass" type="password" placeholder="Password admin"><button id="loginBtn" class="green">LOGIN</button><div id="ls" class="status">Masukkan password admin.</div></div>
 <div id="panel" class="hidden">
 <div class="p"><button id="backBtn" class="gray">← ABSENSI</button><button id="logoutBtn" class="red">LOGOUT</button></div>
-<div class="p">
-<h2>⚙️ Lokasi Sekolah</h2>
-<label>Latitude</label><input id="lat" type="number" step="any">
-<label>Longitude</label><input id="lng" type="number" step="any">
-<label>Radius meter</label><input id="radius" type="number" min="10" max="5000">
-<button id="saveConfigBtn" class="green">SIMPAN LOKASI</button><div id="cs" class="status"></div>
-</div>
-<div class="p">
-<h2>➕ Daftar Wajah</h2>
-<input id="nm" placeholder="Nama lengkap">
-<select id="tp"><option>SISWA</option><option>GURU</option><option>STAFF</option></select>
-<input id="ident" placeholder="NISN / NIP / ID">
-<div class="cam"><video id="vid" autoplay muted playsinline></video></div>
-<button id="startBtn" class="green">▶ KAMERA</button>
-<button id="captureBtn" class="green">📸 AMBIL SAMPEL</button>
-<button id="stopBtn" class="gray">STOP</button>
-<label>Upload JPG/JPEG/PNG</label>
-<input id="file" type="file" accept="image/jpeg,image/png">
-<img id="preview" class="preview hidden">
-<div id="ss" class="status">0 sampel</div>
-<button id="saveBtn" class="green">💾 SIMPAN</button>
-</div>
+<div class="p"><h2>📊 Ringkasan Hari Ini</h2><div class="grid"><div class="card">TOTAL SISWA<div id="dTotal" class="num">-</div></div><div class="card">HADIR<div id="dHadir" class="num ok">-</div></div><div class="card">SAKIT<div id="dSakit" class="num">-</div></div><div class="card">IZIN<div id="dIzin" class="num">-</div></div><div class="card">DISPENSASI<div id="dDisp" class="num">-</div></div><div class="card">ALPHA<div id="dAlpha" class="num danger">-</div></div></div><div id="dashStatus" class="status"></div></div>
+<div class="p"><h2>⚙️ Lokasi Sekolah</h2><label>Latitude</label><input id="lat" type="number" step="any"><label>Longitude</label><input id="lng" type="number" step="any"><label>Radius meter</label><input id="radius" type="number" min="10" max="5000"><button id="saveConfigBtn" class="green">SIMPAN LOKASI</button><div id="cs" class="status"></div></div>
+<div class="p"><h2>📝 Pengelolaan Ketidakhadiran</h2><div class="grid"><div><label>Siswa</label><select id="absStudent"><option value="">Pilih siswa...</option></select></div><div><label>Status</label><select id="absStatus"><option>SAKIT</option><option>IZIN</option><option>DISPENSASI</option></select></div><div><label>Tanggal mulai</label><input id="absStart" type="date"></div><div><label>Tanggal selesai</label><input id="absEnd" type="date"></div></div><label>Keterangan</label><input id="absNote" placeholder="Contoh: Demam / keperluan keluarga / lomba"><button id="saveAbsBtn" class="green">💾 SIMPAN</button><h3>Data tanggal</h3><input id="absViewDate" type="date"><div id="absList" class="scroll"></div></div>
 <div class="p"><h2>👥 DATA WAJAH</h2><div id="list">Memuat...</div></div>
-</div>
-</div>
+<div class="p"><h2>➕ Daftar Wajah</h2><input id="nm" placeholder="Nama lengkap"><select id="tp"><option>SISWA</option><option>GURU</option><option>STAFF</option></select><input id="ident" placeholder="NISN / NIP / ID"><div class="cam"><video id="vid" autoplay muted playsinline></video></div><button id="startBtn" class="green">▶ KAMERA</button><button id="captureBtn" class="green">📸 SAMPEL</button><button id="stopBtn" class="gray">STOP</button><label>Upload JPG/JPEG/PNG</label><input id="file" type="file" accept="image/jpeg,image/png"><img id="preview" class="preview hidden"><div id="ss" class="status">0 sampel</div><button id="saveBtn" class="green">💾 SIMPAN</button></div>
+<div class="p"><h2>📅 Rekap Harian</h2><input id="dailyDate" type="date"><button id="dailyBtn" class="green">TAMPILKAN</button><div id="dailySummary"></div><div id="dailyTable" class="scroll"></div></div>
+<div class="p"><h2>📆 Rekap Bulanan</h2><input id="monthPick" type="month"><button id="monthBtn" class="green">TAMPILKAN</button><div id="monthSummary"></div><div id="monthTable" class="scroll"></div></div>
+<div class="p"><h2>🗓️ Rekap Tahunan</h2><input id="yearPick" type="number" min="2020" max="2100"><button id="yearBtn" class="green">TAMPILKAN</button><div id="yearSummary"></div><div id="yearTable" class="scroll"></div></div>
+<div class="p"><h2>👤 Rekap Per Orang</h2><div class="grid"><select id="personPick"><option value="">Pilih orang...</option></select><input id="personStart" type="date"><input id="personEnd" type="date"></div><button id="personBtn" class="green">TAMPILKAN</button><div id="personSummary"></div><div id="personTable" class="scroll"></div></div>
+</div></div>
 <script>
-'use strict';
-const API='https://script.google.com/macros/s/AKfycbxMP6hm7ctCC2pfcButCpxysw02C62aU7usatWJpSvodHbQnq5PKJC7KjsZn4yS5B5y/exec';
-const MODEL='./models',TK='face_admin_token';
-let token=sessionStorage.getItem(TK)||'',stream=null,ds=[],ready=false,people=[];
-const $=id=>document.getElementById(id);
-async function getApi(action){const r=await fetch(API+'?action='+encodeURIComponent(action)+'&t='+Date.now());const d=await r.json();if(!d.success)throw Error(d.error||'API gagal');return d}
-async function postApi(data){const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data)});const d=await r.json();if(!d.success)throw Error(d.error||'API gagal');return d}
-async function loginAdmin(){
- const password=$('pass').value;
- if(!password){$('ls').textContent='❌ Password belum diisi.';return}
- $('loginBtn').disabled=true;$('ls').textContent='⏳ Memeriksa password...';
- try{const d=await postApi({action:'login',password});token=d.token;sessionStorage.setItem(TK,token);showPanel();await initAdmin()}catch(e){$('ls').textContent='❌ '+e.message}finally{$('loginBtn').disabled=false}
-}
-function showPanel(){$('login').classList.add('hidden');$('panel').classList.remove('hidden')}
-function logout(){sessionStorage.removeItem(TK);token='';location.reload()}
-async function initAdmin(){
- $('ss').textContent='⏳ Memuat model wajah...';
- try{
-  await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL);await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL);await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL);ready=true;$('ss').textContent='✅ Model siap — 0 sampel';
- }catch(e){ready=false;$('ss').textContent='⚠️ Model belum siap: '+e.message+' | Pastikan folder models ada di GitHub Pages.'}
- try{const c=await getApi('config');$('lat').value=c.config.latitude;$('lng').value=c.config.longitude;$('radius').value=c.config.radius;await sync()}catch(e){$('cs').textContent='❌ '+e.message}
-}
-async function sync(){try{const d=await getApi('faces');people=d.people||d.data||[];renderPeople()}catch(e){$('list').textContent='❌ '+e.message}}
-function renderPeople(){$('list').innerHTML='';if(!people.length){$('list').textContent='Belum ada data wajah.';return}people.forEach(p=>{const x=document.createElement('div');x.className='person';const s=document.createElement('span');s.innerHTML='<b>'+esc(p.name)+'</b><br><span class="small">'+esc(p.type)+' • '+esc(p.identity)+' • '+(p.descriptors||[]).length+' sampel</span>';const b=document.createElement('button');b.className='red';b.textContent='HAPUS';b.addEventListener('click',()=>del(p.id));x.appendChild(s);x.appendChild(b);$('list').appendChild(x)})}
-async function saveConfig(){try{const d=await postApi({action:'saveConfig',token,data:{latitude:+$('lat').value,longitude:+$('lng').value,radius:+$('radius').value}});$('cs').textContent='✅ Tersimpan. Radius '+d.config.radius+' m'}catch(e){$('cs').textContent='❌ '+e.message}}
-async function start(){
- if(stream)return;
- if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('ss').textContent='❌ Browser tidak mendukung kamera atau halaman belum HTTPS.';return}
- try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});$('vid').srcObject=stream;await $('vid').play();$('ss').textContent=ready?'📷 Kamera aktif — siap ambil sampel.':'⚠️ Kamera aktif, tetapi model belum siap.'}catch(e){$('ss').textContent='❌ Kamera: '+e.message}}
-function stop(){if(stream){stream.getTracks().forEach(x=>x.stop());stream=null}$('vid').srcObject=null}
-async function capture(){
- if(!ready){alert('Model wajah belum siap. Pastikan folder models tersedia dan halaman dibuka melalui HTTPS.');return}
- if(!stream){alert('Nyalakan kamera terlebih dahulu.');return}
- try{const d=await faceapi.detectSingleFace($('vid'),new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();if(!d){alert('Wajah tidak ditemukan. Posisikan wajah di depan kamera.');return}ds.push(Array.from(d.descriptor));$('ss').textContent='✅ '+ds.length+' sampel'}catch(e){$('ss').textContent='❌ Gagal mengambil sampel: '+e.message}}
-async function uploadFile(e){
- const f=e.target.files[0];if(!f)return;
- if(!ready){alert('Model wajah belum siap.');e.target.value='';return}
- const url=URL.createObjectURL(f),img=new Image();
- img.onload=async()=>{try{const d=await faceapi.detectSingleFace(img,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();if(!d){alert('Wajah tidak ditemukan pada file.');return}ds.push(Array.from(d.descriptor));$('preview').src=url;$('preview').classList.remove('hidden');$('ss').textContent='✅ '+ds.length+' sampel'}catch(err){alert('Gagal membaca gambar: '+err.message)}};img.onerror=()=>alert('File gambar tidak dapat dibaca.');img.src=url;
-}
-async function save(){
- const name=$('nm').value.trim(),identity=$('ident').value.trim();
- if(!name||!identity||!ds.length){alert('Nama, identitas, dan minimal satu sampel wajib.');return}
- $('saveBtn').disabled=true;$('ss').textContent='⏳ Menyimpan data wajah...';
- try{await postApi({action:'register',token,data:{id:'person_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),name,type:$('tp').value,identity,descriptors:ds}});$('nm').value='';$('ident').value='';ds=[];$('file').value='';$('preview').src='';$('preview').classList.add('hidden');$('ss').textContent='✅ Data tersimpan. 0 sampel';await sync();alert('Data wajah berhasil disimpan.')}catch(e){$('ss').textContent='❌ '+e.message}finally{$('saveBtn').disabled=false}
-}
-async function del(id){if(!confirm('Hapus data wajah ini?'))return;try{await postApi({action:'delete',token,data:{id}});await sync()}catch(e){alert('Gagal menghapus: '+e.message)}}
-function esc(x){const d=document.createElement('div');d.textContent=x??'';return d.innerHTML}
-window.addEventListener('DOMContentLoaded',()=>{
- $('loginBtn').addEventListener('click',loginAdmin);
- $('pass').addEventListener('keydown',e=>{if(e.key==='Enter')loginAdmin()});
- $('backBtn').addEventListener('click',()=>location.href='index.html');
- $('logoutBtn').addEventListener('click',logout);
- $('saveConfigBtn').addEventListener('click',saveConfig);
- $('startBtn').addEventListener('click',start);
- $('captureBtn').addEventListener('click',capture);
- $('stopBtn').addEventListener('click',stop);
- $('file').addEventListener('change',uploadFile);
- $('saveBtn').addEventListener('click',save);
- if(token){showPanel();initAdmin()}
-});
-</script>
-</body></html>
+'use strict';const API='https://script.google.com/macros/s/AKfycbxMP6hm7ctCC2pfcButCpxysw02C62aU7usatWJpSvodHbQnq5PKJC7KjsZn4yS5B5y/exec',MODEL='./models',TK='face_admin_token';let token=sessionStorage.getItem(TK)||'',stream=null,ds=[],ready=false,people=[];const $=id=>document.getElementById(id),today=()=>new Date().toISOString().slice(0,10);
+async function getApi(a,p={}){let q=new URLSearchParams({action:a,...p,t:Date.now()}),r=await fetch(API+'?'+q),d=await r.json();if(!d.success)throw Error(d.error||'API gagal');return d}
+async function postApi(x){let r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(x)}),d=await r.json();if(!d.success)throw Error(d.error||'API gagal');return d}
+function show(){login.classList.add('hidden');panel.classList.remove('hidden')}function logout(){sessionStorage.removeItem(TK);location.reload()}
+async function loginAdmin(){try{loginBtn.disabled=true;let d=await postApi({action:'login',password:pass.value});token=d.token;sessionStorage.setItem(TK,token);show();await init()}catch(e){ls.textContent='❌ '+e.message}finally{loginBtn.disabled=false}}
+async function init(){dailyDate.value=today();absStart.value=today();absEnd.value=today();absViewDate.value=today();personStart.value=today();personEnd.value=today();monthPick.value=today().slice(0,7);yearPick.value=new Date().getFullYear();try{await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL);await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL);await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL);ready=true;ss.textContent='✅ Model siap'}catch(e){ss.textContent='⚠️ Model: '+e.message}let c=await getApi('config');lat.value=c.config.latitude;lng.value=c.config.longitude;radius.value=c.config.radius;await sync();await dashboard();await loadAbs();await daily();await monthly();await yearly()}
+async function sync(){let d=await getApi('faces');people=d.people||d.data||[];render();absStudent.innerHTML='<option value="">Pilih siswa...</option>';personPick.innerHTML='<option value="">Pilih orang...</option>';people.forEach(p=>{let o=document.createElement('option');o.value=p.id;o.textContent=p.name+' — '+p.identity;if(String(p.type).toUpperCase()==='SISWA')absStudent.appendChild(o);let z=o.cloneNode(true);personPick.appendChild(z)})}
+function render(){list.innerHTML='';people.forEach(p=>{let x=document.createElement('div');x.className='status';x.style.margin='7px 0';x.innerHTML='<b>'+esc(p.name)+'</b><br><span class="muted">'+esc(p.type)+' • '+esc(p.identity)+' • '+(p.descriptors||[]).length+' sampel</span>';let b=document.createElement('button');b.className='red';b.textContent='HAPUS';b.onclick=()=>del(p.id);x.appendChild(b);list.appendChild(x)})}
+async function dashboard(){let d=await getApi('reportDaily',{date:today()}),c=d.counts;dTotal.textContent=d.total;dHadir.textContent=c.HADIR;dSakit.textContent=c.SAKIT;dIzin.textContent=c.IZIN;dDisp.textContent=c.DISPENSASI;dAlpha.textContent=c.ALPHA;dashStatus.textContent='ALPHA = siswa yang tidak HADIR dan tidak memiliki SAKIT/IZIN/DISPENSASI. Di luar radius tidak otomatis menjadi ALPHA.'}
+async function loadAbs(){let d=await getApi('absenceToday',{date:absViewDate.value||today()}),a=d.absence||[];if(!a.length){absList.textContent='Tidak ada data.';return}let h='<table><tr><th>Nama</th><th>Status</th><th>Keterangan</th><th>Aksi</th></tr>';a.forEach(x=>h+='<tr><td>'+esc(x.name)+'</td><td>'+x.status+'</td><td>'+esc(x.keterangan)+'</td><td><button class="red" onclick="removeAbs('+x.row+')">HAPUS</button></td></tr>');absList.innerHTML=h+'</table>'}
+async function saveAbs(){try{saveAbsBtn.disabled=true;await postApi({action:'saveAbsence',token,data:{id:absStudent.value,status:absStatus.value,start:absStart.value,end:absEnd.value,keterangan:absNote.value,inputBy:'ADMIN'}});absNote.value='';await loadAbs();await dashboard();await daily();alert('Ketidakhadiran tersimpan.')}catch(e){alert('❌ '+e.message)}finally{saveAbsBtn.disabled=false}}
+async function removeAbs(row){if(!confirm('Hapus data ini?'))return;try{await postApi({action:'deleteAbsence',token,data:{row}});await loadAbs();await dashboard();await daily()}catch(e){alert(e.message)}}
+function sum(c){return '<div class="grid"><div class="card">HADIR<div class="num ok">'+(c.HADIR||0)+'</div></div><div class="card">SAKIT<div class="num">'+(c.SAKIT||0)+'</div></div><div class="card">IZIN<div class="num">'+(c.IZIN||0)+'</div></div><div class="card">DISPENSASI<div class="num">'+(c.DISPENSASI||0)+'</div></div><div class="card">ALPHA<div class="num danger">'+(c.ALPHA||0)+'</div></div></div>'}
+async function daily(){try{let d=await getApi('reportDaily',{date:dailyDate.value}),c=d.counts;dailySummary.innerHTML=sum(c);let h='<table><tr><th>No</th><th>Nama</th><th>Identitas</th><th>Status</th><th>Jam</th><th>Jarak</th><th>Keterangan</th></tr>';d.rows.forEach((x,i)=>h+='<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.identity)+'</td><td>'+x.status+'</td><td>'+esc(x.time)+'</td><td>'+esc(x.distance)+'</td><td>'+esc(x.keterangan)+'</td></tr>');dailyTable.innerHTML=h+'</table>'}catch(e){dailyTable.textContent='❌ '+e.message}}
+async function monthly(){try{let [y,m]=(monthPick.value||today().slice(0,7)).split('-'),d=await getApi('reportMonthly',{year:y,month:m});monthSummary.innerHTML=sum(d.totals);let h='<table><tr><th>No</th><th>Nama</th><th>Identitas</th><th>Hadir</th><th>Sakit</th><th>Izin</th><th>Dispensasi</th><th>Alpha</th></tr>';d.rows.forEach((x,i)=>h+='<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.identity)+'</td><td>'+x.HADIR+'</td><td>'+x.SAKIT+'</td><td>'+x.IZIN+'</td><td>'+x.DISPENSASI+'</td><td>'+x.ALPHA+'</td></tr>');monthTable.innerHTML=h+'</table>'}catch(e){monthTable.textContent='❌ '+e.message}}
+async function yearly(){try{let d=await getApi('reportYearly',{year:yearPick.value});yearSummary.innerHTML=sum(d.totals);let h='<table><tr><th>No</th><th>Nama</th><th>Identitas</th><th>Hadir</th><th>Sakit</th><th>Izin</th><th>Dispensasi</th><th>Alpha</th></tr>';d.rows.forEach((x,i)=>h+='<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.identity)+'</td><td>'+x.HADIR+'</td><td>'+x.SAKIT+'</td><td>'+x.IZIN+'</td><td>'+x.DISPENSASI+'</td><td>'+x.ALPHA+'</td></tr>');yearTable.innerHTML=h+'</table>'}catch(e){yearTable.textContent='❌ '+e.message}}
+async function personReport(){try{let d=await getApi('reportPerson',{id:personPick.value,start:personStart.value,end:personEnd.value});personSummary.innerHTML='<h3>'+esc(d.person.name)+'</h3>'+sum(d.counts);let h='<table><tr><th>Tanggal</th><th>Status</th><th>Jam</th><th>Jarak</th><th>Keterangan</th></tr>';d.rows.forEach(x=>h+='<tr><td>'+x.date+'</td><td>'+x.status+'</td><td>'+esc(x.time)+'</td><td>'+esc(x.distance)+'</td><td>'+esc(x.keterangan)+'</td></tr>');personTable.innerHTML=h+'</table>'}catch(e){personTable.textContent='❌ '+e.message}}
+async function saveConfig(){try{await postApi({action:'saveConfig',token,data:{latitude:+lat.value,longitude:+lng.value,radius:+radius.value}});cs.textContent='✅ Lokasi tersimpan'}catch(e){cs.textContent='❌ '+e.message}}
+async function start(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});vid.srcObject=stream;await vid.play();ss.textContent='📷 Kamera aktif'}catch(e){ss.textContent='❌ '+e.message}}
+function stop(){if(stream){stream.getTracks().forEach(x=>x.stop());stream=null}vid.srcObject=null}
+async function capture(){if(!ready||!stream)return alert('Model/kamera belum siap.');let d=await faceapi.detectSingleFace(vid,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();if(!d)return alert('Wajah tidak ditemukan.');ds.push(Array.from(d.descriptor));ss.textContent='✅ '+ds.length+' sampel'}
+async function upload(e){let f=e.target.files[0];if(!f||!ready)return;let u=URL.createObjectURL(f),im=new Image();im.onload=async()=>{let d=await faceapi.detectSingleFace(im,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();if(!d)return alert('Wajah tidak ditemukan.');ds.push(Array.from(d.descriptor));preview.src=u;preview.classList.remove('hidden');ss.textContent='✅ '+ds.length+' sampel'};im.src=u}
+async function save(){if(!nm.value.trim()||!ident.value.trim()||!ds.length)return alert('Nama, identitas, dan sampel wajib.');try{await postApi({action:'register',token,data:{id:'person_'+Date.now(),name:nm.value.trim(),type:tp.value,identity:ident.value.trim(),descriptors:ds}});ds=[];nm.value='';ident.value='';await sync();alert('Data wajah tersimpan.')}catch(e){alert(e.message)}}
+async function del(id){if(!confirm('Hapus data wajah?'))return;await postApi({action:'delete',token,data:{id}});await sync()}
+function esc(x){let d=document.createElement('div');d.textContent=x??'';return d.innerHTML}
+window.addEventListener('DOMContentLoaded',()=>{loginBtn.onclick=loginAdmin;pass.onkeydown=e=>{if(e.key==='Enter')loginAdmin()};backBtn.onclick=()=>location.href='index.html';logoutBtn.onclick=logout;saveConfigBtn.onclick=saveConfig;saveAbsBtn.onclick=saveAbs;absViewDate.onchange=loadAbs;dailyBtn.onclick=daily;monthBtn.onclick=monthly;yearBtn.onclick=yearly;personBtn.onclick=personReport;startBtn.onclick=start;captureBtn.onclick=capture;stopBtn.onclick=stop;file.onchange=upload;saveBtn.onclick=save;if(token){show();init()}})
+</script></body></html>
